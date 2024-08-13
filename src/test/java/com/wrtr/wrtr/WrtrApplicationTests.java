@@ -1,0 +1,13 @@
+package com.wrtr.wrtr;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class WrtrApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
