@@ -1,14 +1,11 @@
 package com.wrtr.wrtr.core.controllers;
 
-import com.wrtr.wrtr.core.config.UserModelDetails;
 import com.wrtr.wrtr.core.model.Post;
 import com.wrtr.wrtr.core.model.Resource;
 import com.wrtr.wrtr.core.model.User;
 import com.wrtr.wrtr.core.model.dto.PostDto;
-import com.wrtr.wrtr.core.repository.PostRepository;
-import com.wrtr.wrtr.core.repository.UserRepository;
 import com.wrtr.wrtr.core.service.PostService;
-import com.wrtr.wrtr.core.service.UserModelDetailsService;
+import com.wrtr.wrtr.core.service.UserService;
 import com.wrtr.wrtr.core.storage.FileSystemStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -33,7 +29,7 @@ import java.util.*;
 public class UserProfileController {
 
     @Autowired
-    private UserModelDetailsService userModelDetailsService;
+    private UserService userModelDetailsService;
     @Autowired
     private PostService postService;
     @Autowired

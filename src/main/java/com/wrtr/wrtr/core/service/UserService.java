@@ -14,7 +14,7 @@ import java.util.UUID;
  * The service that gets user's details
  */
 @Service
-public class UserModelDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
+public class UserService implements org.springframework.security.core.userdetails.UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 

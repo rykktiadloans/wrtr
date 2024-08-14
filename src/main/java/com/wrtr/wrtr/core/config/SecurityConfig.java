@@ -1,6 +1,6 @@
 package com.wrtr.wrtr.core.config;
 
-import com.wrtr.wrtr.core.service.UserModelDetailsService;
+import com.wrtr.wrtr.core.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -44,7 +44,7 @@ public class SecurityConfig {
      */
     @Bean
     public org.springframework.security.core.userdetails.UserDetailsService userDetailsService() {
-        return new UserModelDetailsService();
+        return new UserService();
     }
 
     /**
