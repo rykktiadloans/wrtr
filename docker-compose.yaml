@@ -1,0 +1,32 @@
+version: "3.7"
+services:
+  wrtr:
+    build: .
+    restart: 'no'
+    container_name: wrtr
+    ports:
+      - 8080:8080
+    networks:
+      - wrtr-net
+    environment:
+      - SPRING_DATASOURCE_URL=$DB_URL
+      - SPRING_DATASOURCE_USERNAME=$DB_USERNAME
+      - SPRING_DATASOURCE_PASSWORD=$DB_PASSWORD
+    depends_on:
+      - db
+
+    volumes:
+      - .m2:/root/.m2
+
+  db:
+    image: "postgres:16.3"
+    container_name: db
+    restart: 'no'
+    networks:
+      - wrtr-net
+    environment:
+      - POSTGRES_USER=$DB_USERNAME
+      - POSTGRES_DB=$DB_NAME
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+networks:
+  wrtr-net:

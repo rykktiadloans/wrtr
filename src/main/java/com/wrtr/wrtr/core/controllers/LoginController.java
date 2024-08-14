@@ -86,7 +86,7 @@ public class LoginController {
             return "redirect:/register?duplicate";
         }
 
-        return "/login";
+        return "login";
 
     }
 
