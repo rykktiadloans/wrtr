@@ -24,6 +24,7 @@ public class PostDto {
      * @param content Content of the post
      */
     public PostDto(String userId, String content) {
+        this.files = new ArrayList<>();
         this.userId = userId;
         this.content = content;
     }

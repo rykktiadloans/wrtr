@@ -123,7 +123,7 @@ public class UserProfileController {
      */
     @PostMapping(path = "/newpost")
     public String postNewPost(Authentication authentication, Model model, @ModelAttribute("postDto") PostDto postDto){
-        User user = this.userModelDetailsService.getUserById(UUID.fromString(postDto.getUserId()));
+        User user = this.userModelDetailsService.getUserByUsername(authentication.getName());
         if(!user.getId().toString().equals(postDto.getUserId())){
             return "redirect:/login";
         }
