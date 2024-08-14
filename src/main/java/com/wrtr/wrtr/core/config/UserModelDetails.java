@@ -9,9 +9,19 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
 
+/**
+ * User details class
+ */
 public class UserModelDetails implements UserDetails {
+    /**
+     * User object that UserModelDetails works with
+     */
     private User user;
 
+    /**
+     * Constructor
+     * @param user User to convert to user details
+     */
     public UserModelDetails(User user) {
         this.user = user;
     }
@@ -44,8 +54,8 @@ public class UserModelDetails implements UserDetails {
     }
 
     /**
-     * Return user's username
-     * @return User's username
+     * Return user's email
+     * @return User's email
      */
     @Override
     public String getUsername() {

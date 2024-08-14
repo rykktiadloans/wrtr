@@ -14,8 +14,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Random;
 
+/**
+ * Controller that is used to get the resources
+ */
 @RestController
 public class ResourceController {
+    /**
+     * Get controller that returns the resource. Accessible with GET "/upload-dir/{name}"
+     * @param name Name of the resource
+     * @return The data
+     * @throws IOException throws an IOException if the app can't find the object
+     */
     @GetMapping(path = "/upload-dir/{name}")
     public byte[] getResource(@PathVariable(name = "name") String name) throws IOException {
         Path path = Path.of("upload-dir/" + name);

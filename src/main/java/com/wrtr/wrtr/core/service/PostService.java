@@ -7,6 +7,9 @@ import com.wrtr.wrtr.core.repository.ResourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * A service that is used to work with posts
+ */
 @Service
 public class PostService {
     @Autowired
@@ -14,6 +17,11 @@ public class PostService {
     @Autowired
     private ResourceRepository resourceRepository;
 
+    /**
+     * Save a post and it's resources to the database
+     * @param post The post to save
+     * @return The saved post
+     */
     public Post save(Post post){
         for(Resource resource : post.getResourceSet()){
             this.resourceRepository.save(resource);

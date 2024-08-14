@@ -1,0 +1,8 @@
+com.wrtr.wrtr
+com.wrtr.wrtr.core.config
+com.wrtr.wrtr.core.controllers
+com.wrtr.wrtr.core.model
+com.wrtr.wrtr.core.model.dto
+com.wrtr.wrtr.core.repository
+com.wrtr.wrtr.core.service
+com.wrtr.wrtr.core.storage

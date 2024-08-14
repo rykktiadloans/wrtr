@@ -17,14 +17,28 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
+/**
+ * Service class that manages saving and retrieving files from the dynamic storage
+ */
 @Service
 public class FileSystemStorageService implements StorageService{
     private final Path rootLocation;
+
+    /**
+     * Constructor
+     * @param properties Properties of the dynamic storage
+     */
     @Autowired
     public FileSystemStorageService(StorageProperties properties){
         this.rootLocation = Paths.get(properties.getLocation());
 
     }
+
+    /**
+     * Saves a file and turns it into a resource object
+     * @param file File to save
+     * @return New resource
+     */
     @Override
     public Resource save(MultipartFile file) {
         Resource resource = new Resource();
@@ -58,6 +72,11 @@ public class FileSystemStorageService implements StorageService{
         return resource;
     }
 
+    /**
+     * Gets resource's path
+     * @param resource Resource to use
+     * @return Path to the resource
+     */
     @Override
     public Path load(Resource resource) {
         return this.rootLocation.resolve(Paths.get(resource.getPath()));

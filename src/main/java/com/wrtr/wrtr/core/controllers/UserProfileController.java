@@ -26,6 +26,9 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+/**
+ * Controller used to access user's profiles
+ */
 @Controller
 public class UserProfileController {
 
@@ -36,6 +39,11 @@ public class UserProfileController {
     @Autowired
     private FileSystemStorageService storageService;
 
+    /**
+     * Redirects to the user's profile if the user is logged in, other wise redirects to the login page
+     * @param authentication The authentication object we use to check credentials
+     * @return Either redirects to the login page, or to the user's profile page
+     */
     @GetMapping(path = "/myprofile")
     public String getMyProfile(Authentication authentication){
         String id;
@@ -48,6 +56,13 @@ public class UserProfileController {
         return "redirect:/user/".concat(id);
     }
 
+    /**
+     * Builds and return's the selected user's profile page
+     * @param userId User's ID passed in the URL
+     * @param model The model object we use to populate the template
+     * @param authentication The authentication object we use to check whether the logged in user should have control of the profile
+     * @return The profile page of the user, or redirects to the homepage if the user is not found
+     */
     @GetMapping(path = "/user/{userId}")
     public String getUserProfile(@PathVariable(value = "userId") String userId, Model model, Authentication authentication) {
         User user;
@@ -99,6 +114,13 @@ public class UserProfileController {
         return "profile";
     }
 
+    /**
+     * Method that handles creating and saving a new post
+     * @param authentication Authentication object we use to check the credentials
+     * @param model Model object
+     * @param postDto The DTO object we use to assemble the post and it's attachments
+     * @return Either redirects to the login page, or redirects to the profile page
+     */
     @PostMapping(path = "/newpost")
     public String postNewPost(Authentication authentication, Model model, @ModelAttribute("postDto") PostDto postDto){
         User user = this.userModelDetailsService.getUserById(UUID.fromString(postDto.getUserId()));

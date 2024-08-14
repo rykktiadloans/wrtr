@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+/**
+ * The service that gets user's details
+ */
 @Service
 public class UserModelDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
     @Autowired
@@ -30,6 +33,12 @@ public class UserModelDetailsService implements org.springframework.security.cor
         return new UserModelDetails(userModel);
     }
 
+    /**
+     * Returns a user with a matching username
+     * @param username User's username
+     * @return Matching user
+     * @throws UsernameNotFoundException Thrown if the user was not found
+     */
     public User getUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.getUserByUsername(username);
         if(user == null){
@@ -38,6 +47,12 @@ public class UserModelDetailsService implements org.springframework.security.cor
         return user;
     }
 
+    /**
+     * Returns user with a matching ID
+     * @param id User's ID
+     * @return Matching user
+     * @throws UsernameNotFoundException Thrown if the user was not found
+     */
     public User getUserById(UUID id) throws UsernameNotFoundException {
         User user = userRepository.getUserById(id);
         if(user == null){
@@ -46,6 +61,11 @@ public class UserModelDetailsService implements org.springframework.security.cor
         return user;
     }
 
+    /**
+     * Save user to the database
+     * @param user User to save
+     * @return The user
+     */
     public User save(User user){
         return this.userRepository.save(user);
     }

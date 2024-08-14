@@ -8,6 +8,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * A persistent model class that contains information about a post
+ */
 @Entity
 @Table(name = "posts")
 public class Post {
@@ -37,8 +40,16 @@ public class Post {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime date;
 
+    /**
+     * Empty constructor
+     */
     public Post() {}
 
+    /**
+     * The complete constructor
+     * @param content Post's content
+     * @param author Author of the post
+     */
     public Post(String content, User author){
         this.author = author;
         this.content = content;
@@ -46,42 +57,82 @@ public class Post {
         this.date = LocalDateTime.now();
     }
 
+    /**
+     * Get post's id
+     * @return Post's UUID
+     */
     public UUID getId() {
         return id;
     }
 
+    /**
+     * Set post's id
+     * @param id Post's new UUID
+     */
     public void setId(UUID id) {
         this.id = id;
     }
 
+    /**
+     * Return the post's content
+     * @return Post's content
+     */
     public String getContent() {
         return content;
     }
 
+    /**
+     * Set the post's content
+     * @param content New content
+     */
     public void setContent(String content) {
         this.content = content;
     }
 
+    /**
+     * Get the set of attachments
+     * @return Post's attachments
+     */
     public Set<Resource> getResourceSet() {
         return resourceSet;
     }
 
+    /**
+     * Set a new set of attachments
+     * @param resourceSet New attachments
+     */
     public void setResourceSet(Set<Resource> resourceSet) {
         this.resourceSet = resourceSet;
     }
 
+    /**
+     * Get post's author
+     * @return Post's author
+     */
     public User getAuthor() {
         return author;
     }
 
+    /**
+     * Sets post's new author
+     * @param author New author
+     */
     public void setAuthor(User author) {
         this.author = author;
     }
 
+    /**
+     * Get the post's creation date
+     * @return Creation date
+     */
     public LocalDateTime getDate() {
         return date;
     }
 
+    /**
+     * Set the post's new creation date
+     * @param date New date
+     */
     public void setDate(LocalDateTime date) {
         this.date = date;
     }

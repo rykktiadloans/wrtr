@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
+/**
+ * Controls creation and access of users
+ */
 @Controller
 public class LoginController {
     @Autowired
@@ -47,6 +50,7 @@ public class LoginController {
 
     /**
      * Return the register page on "/register"
+     * @param model Model object we use to populate the template
      * @return The register page
      */
     @GetMapping("/register")
@@ -67,6 +71,8 @@ public class LoginController {
 
     /**
      * Create a new account and redirect to "/login". Accessible on "/register" with POST method.
+     * @param model Model object we use to populate the template
+     * @param user User object we work with
      * @return The login page
      */
     @PostMapping("/register")
@@ -88,6 +94,12 @@ public class LoginController {
 
     }
 
+    /**
+     * Gets the page the user can use to change stuff about their profile. Accessed with GET "/editprofile"
+     * @param model Model object we use to populate the template
+     * @param authentication The authentication object we use to determine the logged in user
+     * @return The editprofile template if the user matches, redirects to the login page otherwise
+     */
     @GetMapping("/editprofile")
     public String getEditProfilePage(Model model, Authentication authentication){
         User user;
@@ -102,6 +114,12 @@ public class LoginController {
         return "editprofile";
     }
 
+    /**
+     * Used to actually change the profile of the user. Accessible with PUT "/editprofile"
+     * @param userDto The DTO object we got from the "/editprofile" page with the new data
+     * @param authentication The authentication object we use to get the current logged in user
+     * @return Redirects to the user's profile if the credentials match. Otherwise redirects to the login page
+     */
     @PutMapping("/editprofile")
     public String putEditProfile(@ModelAttribute("userDto") UserDto userDto, Authentication authentication){
         User user;
