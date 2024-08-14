@@ -23,15 +23,21 @@ public class ResourceController {
      * Get controller that returns the resource. Accessible with GET "/upload-dir/{name}"
      * @param name Name of the resource
      * @return The data
-     * @throws IOException throws an IOException if the app can't find the object
      */
     @GetMapping(path = "/upload-dir/{name}")
-    public byte[] getResource(@PathVariable(name = "name") String name) throws IOException {
+    public byte[] getResource(@PathVariable(name = "name") String name) {
         Path path = Path.of("upload-dir/" + name);
         if(!Files.exists(path)){
             return null;
         }
-        return Files.readAllBytes(path);
+        byte[] bytes = null;
+        try {
+            bytes = Files.readAllBytes(path);
+        }
+        catch (IOException e){
+            return null;
+        }
+        return bytes;
 
     }
 }
