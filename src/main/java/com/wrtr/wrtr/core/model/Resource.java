@@ -54,19 +54,19 @@ public class Resource {
     }
 
     /**
-     * Get a set of posts that the resource is attached to
-     * @return Set of posts
+     * Get a the post that the resource is attached to
+     * @return Parent post
      */
     public Post getPost() {
         return post;
     }
 
     /**
-     * Set a new set of posts the resource is attached to
-     * @param postSet New set of posts
+     * Set a new post the resource is attached to
+     * @param post New post
      */
-    public void setPost(Post postSet) {
-        this.post = postSet;
+    public void setPost(Post post) {
+        this.post = post;
     }
 
     /**
