@@ -8,11 +8,13 @@ import com.wrtr.wrtr.core.repository.ResourceRepository;
 import com.wrtr.wrtr.core.repository.UserRepository;
 import com.wrtr.wrtr.core.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 
@@ -103,7 +105,7 @@ public class LoginController {
             user = this.userRepository.getUserByUsername(authentication.getName());
         }
         catch (UsernameNotFoundException | NullPointerException e){
-            return "redirect:/login";
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         UserDto userDto = new UserDto(user.getUsername(), user.getBio(), null);
         model.addAttribute("userDto", userDto);
@@ -123,7 +125,7 @@ public class LoginController {
             user = this.userRepository.getUserByUsername(authentication.getName());
         }
         catch (UsernameNotFoundException | NullPointerException e){
-            return "redirect:/login";
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         Resource resource = null;
         if(userDto.getProfilePicture() != null && !userDto.getProfilePicture().getName().equals("")){

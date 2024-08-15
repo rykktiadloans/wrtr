@@ -1,11 +1,14 @@
 package com.wrtr.wrtr.core.controllers;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,14 +31,14 @@ public class ResourceController {
     public byte[] getResource(@PathVariable(name = "name") String name) {
         Path path = Path.of("upload-dir/" + name);
         if(!Files.exists(path)){
-            return null;
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         byte[] bytes = null;
         try {
             bytes = Files.readAllBytes(path);
         }
         catch (IOException e){
-            return null;
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return bytes;
 

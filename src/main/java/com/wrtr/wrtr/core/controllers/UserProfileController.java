@@ -8,6 +8,7 @@ import com.wrtr.wrtr.core.service.PostService;
 import com.wrtr.wrtr.core.service.UserService;
 import com.wrtr.wrtr.core.storage.FileSystemStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -47,7 +49,7 @@ public class UserProfileController {
             id = this.userModelDetailsService.getUserByUsername(authentication.getName()).getId().toString();
         }
         catch (UsernameNotFoundException | NullPointerException e){
-            return "redirect:/login";
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         return "redirect:/user/".concat(id);
     }
@@ -65,8 +67,8 @@ public class UserProfileController {
         try{
             user = this.userModelDetailsService.getUserById(UUID.fromString(userId));
         }
-        catch (UsernameNotFoundException e){
-            return "redirect:/";
+        catch (IllegalArgumentException | UsernameNotFoundException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         String currectUser = authentication == null ? "" : authentication.getName();
         boolean canEdit = Objects.equals(currectUser, user.getEmail());
@@ -119,9 +121,15 @@ public class UserProfileController {
      */
     @PostMapping(path = "/newpost")
     public String postNewPost(Authentication authentication, Model model, @ModelAttribute("postDto") PostDto postDto){
-        User user = this.userModelDetailsService.getUserByUsername(authentication.getName());
+        User user;
+        try {
+            user = this.userModelDetailsService.getUserByUsername(authentication.getName());
+        }
+        catch (UsernameNotFoundException | NullPointerException e){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
         if(!user.getId().toString().equals(postDto.getUserId())){
-            return "redirect:/login";
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         Post post = new Post(postDto.getContent(), user);
         Set<Resource> resources = new HashSet<>();
