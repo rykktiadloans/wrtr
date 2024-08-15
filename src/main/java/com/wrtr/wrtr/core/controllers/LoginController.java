@@ -96,7 +96,7 @@ public class LoginController {
      * Gets the page the user can use to change stuff about their profile. Accessed with GET "/editprofile"
      * @param model Model object we use to populate the template
      * @param authentication The authentication object we use to determine the logged in user
-     * @return The editprofile template if the user matches, redirects to the login page otherwise
+     * @return The editprofile template if the user matches
      */
     @GetMapping("/editprofile")
     public String getEditProfilePage(Model model, Authentication authentication){

@@ -40,7 +40,7 @@ public class UserProfileController {
     /**
      * Redirects to the user's profile if the user is logged in, other wise redirects to the login page
      * @param authentication The authentication object we use to check credentials
-     * @return Either redirects to the login page, or to the user's profile page
+     * @return Redirects to the user's profile page
      */
     @GetMapping(path = "/myprofile")
     public String getMyProfile(Authentication authentication){
@@ -59,7 +59,7 @@ public class UserProfileController {
      * @param userId User's ID passed in the URL
      * @param model The model object we use to populate the template
      * @param authentication The authentication object we use to check whether the logged in user should have control of the profile
-     * @return The profile page of the user, or redirects to the homepage if the user is not found
+     * @return The profile page of the user
      */
     @GetMapping(path = "/user/{userId}")
     public String getUserProfile(@PathVariable(value = "userId") String userId, Model model, Authentication authentication) {
@@ -117,7 +117,7 @@ public class UserProfileController {
      * @param authentication Authentication object we use to check the credentials
      * @param model Model object
      * @param postDto The DTO object we use to assemble the post and it's attachments
-     * @return Either redirects to the login page, or redirects to the profile page
+     * @return Redirects to the profile page
      */
     @PostMapping(path = "/newpost")
     public String postNewPost(Authentication authentication, Model model, @ModelAttribute("postDto") PostDto postDto){
