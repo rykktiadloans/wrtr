@@ -138,7 +138,7 @@ public class UserProfileController {
                 continue;
             }
             Resource res = this.storageService.save(file);
-            res.setPostSet(Set.of(post));
+            res.setPost(post);
             resources.add(res);
         }
         post.setResourceSet(resources);

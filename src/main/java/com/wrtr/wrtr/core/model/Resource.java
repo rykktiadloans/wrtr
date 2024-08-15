@@ -17,8 +17,9 @@ public class Resource {
     @Column(name = "id")
     private UUID id;
 
-    @ManyToMany(mappedBy = "resourceSet")
-    private Set<Post> postSet;
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
 
     @Column(name = "path", nullable = false)
     private String path;
@@ -34,7 +35,6 @@ public class Resource {
      */
     public Resource(String path) {
         this.path = path;
-        this.postSet = new HashSet<>();
     }
 
     /**
@@ -57,16 +57,16 @@ public class Resource {
      * Get a set of posts that the resource is attached to
      * @return Set of posts
      */
-    public Set<Post> getPostSet() {
-        return postSet;
+    public Post getPost() {
+        return post;
     }
 
     /**
      * Set a new set of posts the resource is attached to
      * @param postSet New set of posts
      */
-    public void setPostSet(Set<Post> postSet) {
-        this.postSet = postSet;
+    public void setPost(Post postSet) {
+        this.post = postSet;
     }
 
     /**

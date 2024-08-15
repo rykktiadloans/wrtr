@@ -23,9 +23,10 @@ public class PostService {
      * @return The saved post
      */
     public Post save(Post post){
+        Post newPost = this.postRepository.save(post);
         for(Resource resource : post.getResourceSet()){
             this.resourceRepository.save(resource);
         }
-        return this.postRepository.save(post);
+        return newPost;
     }
 }

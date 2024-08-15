@@ -24,12 +24,7 @@ public class Post {
     private String content;
 
 
-    @ManyToMany
-    @JoinTable(
-            name = "attachments",
-            joinColumns = @JoinColumn(name = "post_id", nullable = false),
-            inverseJoinColumns = @JoinColumn(name = "resource_id", nullable = false)
-    )
+    @OneToMany(targetEntity = Resource.class, cascade = CascadeType.REMOVE, mappedBy = "post")
     private Set<Resource> resourceSet;
 
     @ManyToOne
