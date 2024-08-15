@@ -40,7 +40,7 @@ jobs:
         run: mvn -B package --file pom.xml
 
       - name: Docker compose
-        run: docker-compose build
+        run: docker compose build
 
       - name: Log into registry ${{ env.REGISTRY }}
         if: github.event_name != 'pull_request'
