@@ -20,6 +20,13 @@
         width:400px;
         border: 1px solid grey;
     }
+    .carousel-control-next, .carousel-control-prev, .carousel-caption p{
+        color: var(--bs-primary) !important;
+    }
+    .carousel-control-next-icon, .carousel-control-prev-icon {
+        background-image: none;
+        font-size: 28px;
+    }
 </style>
 <main class="container-md">
     <div class="row justify-content-center">
@@ -62,22 +69,29 @@
                     <div class="card-body">
                         <p class="card-text" th:text="${post.content}"></p>
                         <div th:attr="id='carousel' + ${i.index}" class="carousel carsize slide " th:if="${#lists.size(images[__${i.index}__])} > 0">
+
                             <div class="carousel-inner">
                                 <th:block th:each="image,j : ${images[__${i.index}__]}">
                                     <div th:if="${j.index} == 0" class="carousel-item active">
                                         <img th:src="${image}" class="d-block w-100">
+                                        <div class="carousel-caption d-none d-md-block">
+                                            <p th:text="${j.index} + '/' + ${images[__${i.index}__].size}"></p>
+                                        </div>
                                     </div>
                                     <div th:if="${j.index} != 0" class="carousel-item">
                                         <img th:src="${image}" class="d-block w-100">
+                                        <div class="carousel-caption d-none d-md-block">
+                                            <p th:text="${j.index} + '/' + ${images[__${i.index}__].size}"></p>
+                                        </div>
                                     </div>
                                 </th:block>
                             </div>
                             <button class="carousel-control-prev" type="button" th:attr="data-bs-target='#carousel' + ${i.index}" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="carousel-control-prev-icon" aria-hidden="true"><b>&lt</b></span>
                                 <span class="visually-hidden">Previous</span>
                             </button>
                             <button class="carousel-control-next" type="button" th:attr="data-bs-target='#carousel' + ${i.index}" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="carousel-control-next-icon" aria-hidden="true"><b>&gt</b></span>
                                 <span class="visually-hidden">Next</span>
                             </button>
                         </div>
