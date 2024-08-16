@@ -117,6 +117,7 @@ public class LoginController {
      * Used to actually change the profile of the user. Accessible with PUT "/editprofile"
      * @param userDto The DTO object we got from the "/editprofile" page with the new data
      * @param authentication The authentication object we use to get the current logged in user
+     * @param model Model object we use to populate the template
      * @return Redirects to the user's profile if the credentials match. Otherwise redirects to the login page
      */
     @PutMapping("/editprofile")
