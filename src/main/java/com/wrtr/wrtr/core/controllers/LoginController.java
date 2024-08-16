@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controls creation and access of users
@@ -119,13 +120,20 @@ public class LoginController {
      * @return Redirects to the user's profile if the credentials match. Otherwise redirects to the login page
      */
     @PutMapping("/editprofile")
-    public String putEditProfile(@ModelAttribute("userDto") UserDto userDto, Authentication authentication){
+    public String putEditProfile(@ModelAttribute("userDto") UserDto userDto, Authentication authentication, Model model){
         User user;
         try{
             user = this.userRepository.getUserByUsername(authentication.getName());
         }
         catch (UsernameNotFoundException | NullPointerException e){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        String[] split = userDto.getProfilePicture().getOriginalFilename().split("\\.");
+        if(!List.of("apng", "bmp", "gif", "jpeg", "pjpeg", "png",
+                "svg", "tiff", "webp").contains(split[split.length - 1])){
+            model.addAttribute("userDto", userDto);
+            return "redirect:/editprofile?fileext";
+
         }
         Resource resource = null;
         if(userDto.getProfilePicture() != null && !userDto.getProfilePicture().getName().equals("")){
