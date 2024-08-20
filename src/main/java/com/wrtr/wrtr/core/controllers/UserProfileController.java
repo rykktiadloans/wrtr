@@ -131,6 +131,9 @@ public class UserProfileController {
         if(!user.getId().toString().equals(postDto.getUserId())){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
+        if(postDto.getContent().length() > 8192){
+            return "redirect:/myprofile";
+        }
         Post post = new Post(postDto.getContent(), user);
         Set<Resource> resources = new HashSet<>();
         for(var file: postDto.getFiles()){

@@ -20,11 +20,15 @@
                         <form th:action="@{/editprofile}" th:method="put" th:object="${userDto}" enctype="multipart/form-data" >
                             <div th:if="${param.fileext}" class="my-3">
                                 Can only use image formats</div>
+                            <div th:if="${param.biolen}" class="my-3">
+                                Bio is too long</div>
+                            <div th:if="${param.usernamelen}" class="my-3">
+                                Username is too long</div>
                             <div class="form-group my-3">
-                                <input type="text" th:field="*{username}" class="form-control"/>
+                                <input type="text" th:field="*{username}" class="form-control" maxlength="255"/>
                             </div>
                             <div class="form-group my-3">
-                                <textarea th:field="*{bio}" class="form-control"/></textarea>
+                                <textarea th:field="*{bio}" class="form-control" maxlength="4096"/></textarea>
                             </div>
                             <div class="form-group my-3">
                                 <input accept="image/*" type="file" th:field="*{profilePicture}" class="form-control-file"/>

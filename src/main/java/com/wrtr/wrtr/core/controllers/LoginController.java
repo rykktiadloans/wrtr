@@ -130,14 +130,22 @@ public class LoginController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         String[] split = userDto.getProfilePicture().getOriginalFilename().split("\\.");
-        if(!List.of("apng", "bmp", "gif", "jpeg", "pjpeg", "png",
+        if(!userDto.getProfilePicture().isEmpty() && !List.of("apng", "bmp", "gif", "jpeg", "pjpeg", "png",
                 "svg", "tiff", "webp").contains(split[split.length - 1])){
             model.addAttribute("userDto", userDto);
             return "redirect:/editprofile?fileext";
 
         }
+        if(userDto.getBio().length() > 4096){
+            model.addAttribute("userDto", userDto);
+            return "redirect:/editprofile?biolen";
+        }
+        if(userDto.getUsername().length() > 255){
+            model.addAttribute("userDto", userDto);
+            return "redirect:/editprofile?usernamelen";
+        }
         Resource resource = null;
-        if(userDto.getProfilePicture() != null && !userDto.getProfilePicture().getName().equals("")){
+        if(!userDto.getProfilePicture().isEmpty() && userDto.getProfilePicture() != null && !userDto.getProfilePicture().getName().equals("")){
             resource = this.storageService.save(userDto.getProfilePicture());
             this.resourceRepository.save(resource);
             user.setProfilePicture(resource);
