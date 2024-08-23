@@ -23,12 +23,14 @@
                             There already exists a user with the same email address.</div>
                         <div th:if="${param.logout}" class="my-3">
                             You have been logged out.</div>
+                        <div th:if="${param.maxlen}" class="my-3">
+                            Email and password must be at most 255 characters long</div>
                         <form th:action="@{/register}" method="post" th:object="${user}">
                             <div class="form-group my-3">
-                                <input type="email" th:field="*{email}"placeholder="example@sample.com" class="form-control"/>
+                                <input type="email" th:field="*{email}" placeholder="example@sample.com" class="form-control" maxlength="255"/>
                             </div>
                             <div class="form-group my-3">
-                                <input type="password" th:field="*{password}" placeholder="Password" class="form-control"/>
+                                <input type="password" th:field="*{password}" placeholder="Password" class="form-control" maxlength="255" minlength="8"/>
                             </div>
                             <input type="submit" value="Register" class="btn btn-primary my-3"/>
                         </form>

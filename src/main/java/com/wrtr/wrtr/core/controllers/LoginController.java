@@ -76,6 +76,9 @@ public class LoginController {
      */
     @PostMapping("/register")
     public String registerPost(Model model, @ModelAttribute("user") User user){
+        if(user.getUsername().length() > 255 || user.getPassword().length() > 255){
+            return "redirect:/register?maxlen";
+        }
         user.setPassword(this.securityConfig.passwordEncoder().encode(user.getPassword()));
         user.setUsername(user.getEmail().replaceAll("@.*$", ""));
         user.setRole("user");
