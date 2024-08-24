@@ -134,6 +134,11 @@ public class UserProfileController {
         if(postDto.getContent().length() > 8192){
             return "redirect:/myprofile";
         }
+        for(var file : postDto.getFiles()){
+            if(file.getSize() > 1049000){
+                return "redirect:/myprofile";
+            }
+        }
         Post post = new Post(postDto.getContent(), user);
         Set<Resource> resources = new HashSet<>();
         for(var file: postDto.getFiles()){

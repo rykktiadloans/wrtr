@@ -53,6 +53,7 @@
                         <textarea th:field="*{content}" class="form-control" maxlength="8192" required></textarea>
                     </div>
                     <div class="form-group my-2">
+                        <p id="file-errors"></p>
                         <input type="file" th:field="*{files}" class="from-control-file" multiple>
                     </div>
                     <input type="hidden" th:field="*{userId}" readonly>
@@ -106,6 +107,21 @@
         </div>
     </div>
 </main>
+<script>
+    document.querySelector("#files").onchange = (event) => {
+        let submit = document.querySelector("input[type='submit']");
+        let canSubmit = false;
+        let errors = document.querySelector("#file-errors");
+        errors.innerHTML = "";
+        for(let el of event.target.files){
+            if(el.size > 1049000){
+                errors.innerHTML += `File ${el.name} is too large (MAX: 1MB)<br>`;
+                canSubmit = true;
+            }
+        }
+        submit.disabled = canSubmit;
+    };
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 </body>
 </html>
