@@ -1,0 +1,19 @@
+img.pfp {
+    height: 200px;
+    width: 200px;
+    float: left;
+    margin-right: 10px;
+}
+
+.carsize {
+    width:400px;
+    border: 1px solid grey;
+}
+.carousel-control-next, .carousel-control-prev, .carousel-caption p{
+    color: var(--bs-primary) !important;
+    text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+}
+.carousel-control-next-icon, .carousel-control-prev-icon {
+    background-image: none;
+    font-size: 28px;
+}

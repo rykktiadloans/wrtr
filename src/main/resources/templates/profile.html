@@ -5,30 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:text="${user.username} + ' / Wrtr'"></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link th:href="@{/styles/profile.css}" rel="stylesheet">
 </head>
 <body>
 <th:block th:insert="~{fragments/header :: #header}"></th:block>
-<style>
-    img.pfp {
-        height: 200px;
-        width: 200px;
-        float: left;
-        margin-right: 10px;
-    }
-
-    .carsize {
-        width:400px;
-        border: 1px solid grey;
-    }
-    .carousel-control-next, .carousel-control-prev, .carousel-caption p{
-        color: var(--bs-primary) !important;
-        text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
-    }
-    .carousel-control-next-icon, .carousel-control-prev-icon {
-        background-image: none;
-        font-size: 28px;
-    }
-</style>
 <main class="container-md">
     <div class="row justify-content-center">
         <div class="col-md-8 ">
@@ -108,21 +88,7 @@
         </div>
     </div>
 </main>
-<script>
-    document.querySelector("#files").onchange = (event) => {
-        let submit = document.querySelector("input[type='submit']");
-        let canSubmit = false;
-        let errors = document.querySelector("#file-errors");
-        errors.innerHTML = "";
-        for(let el of event.target.files){
-            if(el.size > 1049000){
-                errors.innerHTML += `File ${el.name} is too large (MAX: 1MB)<br>`;
-                canSubmit = true;
-            }
-        }
-        submit.disabled = canSubmit;
-    };
-</script>
+<script th:src="@{/scripts/fileSizeValidation.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 </body>
 </html>
