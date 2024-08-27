@@ -1,6 +1,9 @@
 package com.wrtr.wrtr.core.model.dto;
 
+import com.wrtr.wrtr.core.model.User;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * The DTO class for the User objects
@@ -25,6 +28,41 @@ public class UserDto {
         this.username = username;
         this.bio = bio;
         this.profilePicture = profilePicture;
+    }
+
+    /**
+     * Checks if the username is too large
+     * @return True if it's too large, false otherwise
+     */
+    public boolean isUsernameTooLarge(){
+        return this.getUsername().length() > User.USERNAME_SIZE;
+    }
+
+    /**
+     * Checks if the bio is too large
+     * @return True if it's too large, false otherwise
+     */
+    public boolean isBioTooLarge(){
+        return this.getBio().length() > User.BIO_SIZE;
+    }
+
+    /**
+     * Checks if the profile picture was supplied
+     * @return Returns true if picture was supplied, false otherwise
+     */
+    public boolean doesProfilePictureExist(){
+        return !this.getProfilePicture().isEmpty() && this.getProfilePicture() != null && !this.getProfilePicture().getName().equals("");
+    }
+
+    /**
+     * Checks if file is an image
+     * @return True if it's not an image, false otherwise
+     */
+    public boolean isFileNotAnImage(){
+        String[] split = this.getProfilePicture().getOriginalFilename().split("\\.");
+        return !this.getProfilePicture().isEmpty() &&
+                !List.of("apng", "bmp", "gif", "jpeg", "pjpeg", "png", "svg", "tiff", "webp").contains(split[split.length - 1]);
+
     }
 
     /**

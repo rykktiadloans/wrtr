@@ -6,6 +6,7 @@ import com.wrtr.wrtr.core.model.User;
 import com.wrtr.wrtr.core.model.dto.UserDto;
 import com.wrtr.wrtr.core.repository.ResourceRepository;
 import com.wrtr.wrtr.core.repository.UserRepository;
+import com.wrtr.wrtr.core.service.UserService;
 import com.wrtr.wrtr.core.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class LoginController {
     private SecurityConfig securityConfig;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
     private ResourceRepository resourceRepository;
@@ -76,7 +77,7 @@ public class LoginController {
      */
     @PostMapping("/register")
     public String registerPost(Model model, @ModelAttribute("user") User user){
-        if(user.getEmail().length() > 255 || user.getPassword().length() > 255){
+        if(user.anySizeExceeds()){
             return "redirect:/register?maxlen";
         }
         user.setPassword(this.securityConfig.passwordEncoder().encode(user.getPassword()));
@@ -86,7 +87,7 @@ public class LoginController {
         user.setBio("");
         user.setProfilePicture(null);
         try{
-            this.userRepository.save(user);
+            this.userService.save(user);
         }
         catch (RuntimeException e){
             return "redirect:/register?duplicate";
@@ -106,7 +107,7 @@ public class LoginController {
     public String getEditProfilePage(Model model, Authentication authentication){
         User user;
         try{
-            user = this.userRepository.getUserByUsername(authentication.getName());
+            user = this.userService.getUserByUsername(authentication.getName());
         }
         catch (UsernameNotFoundException | NullPointerException e){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -127,35 +128,33 @@ public class LoginController {
     public String putEditProfile(@ModelAttribute("userDto") UserDto userDto, Authentication authentication, Model model){
         User user;
         try{
-            user = this.userRepository.getUserByUsername(authentication.getName());
+            user = this.userService.getUserByAuth(authentication);
         }
         catch (UsernameNotFoundException | NullPointerException e){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        String[] split = userDto.getProfilePicture().getOriginalFilename().split("\\.");
-        if(!userDto.getProfilePicture().isEmpty() && !List.of("apng", "bmp", "gif", "jpeg", "pjpeg", "png",
-                "svg", "tiff", "webp").contains(split[split.length - 1])){
+        if(userDto.isFileNotAnImage()){
             model.addAttribute("userDto", userDto);
             return "redirect:/editprofile?fileext";
 
         }
-        if(userDto.getBio().length() > 4096){
+        if(userDto.isBioTooLarge()){
             model.addAttribute("userDto", userDto);
             return "redirect:/editprofile?biolen";
         }
-        if(userDto.getUsername().length() > 255){
+        if(userDto.isUsernameTooLarge()){
             model.addAttribute("userDto", userDto);
             return "redirect:/editprofile?usernamelen";
         }
         Resource resource = null;
-        if(!userDto.getProfilePicture().isEmpty() && userDto.getProfilePicture() != null && !userDto.getProfilePicture().getName().equals("")){
+        if(!userDto.doesProfilePictureExist()){
             resource = this.storageService.save(userDto.getProfilePicture());
             this.resourceRepository.save(resource);
             user.setProfilePicture(resource);
         }
         user.setUsername(userDto.getUsername());
         user.setBio(userDto.getBio());
-        this.userRepository.save(user);
+        this.userService.save(user);
         return "redirect:/myprofile";
 
     }

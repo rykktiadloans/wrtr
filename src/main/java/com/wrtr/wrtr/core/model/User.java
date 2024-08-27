@@ -1,5 +1,6 @@
 package com.wrtr.wrtr.core.model;
 
+import com.wrtr.wrtr.core.model.dto.UserDto;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -11,22 +12,25 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 public class User {
+    public static final int USERNAME_SIZE = 255;
+    public static final int PASSWORD_SIZE = 255;
+    public static final int BIO_SIZE = 4096;
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", nullable = false, length = USERNAME_SIZE)
     private String username;
 
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = false, length = PASSWORD_SIZE)
     private String password;
 
-    @Column(name = "bio", length = 4096)
+    @Column(name = "bio", length = BIO_SIZE)
     private String bio;
 
     @OneToMany(targetEntity = Post.class, cascade = CascadeType.REMOVE, mappedBy = "author")
@@ -43,6 +47,14 @@ public class User {
      * Empty constructor
      */
     public User() {}
+
+    /**
+     * Check if any fields exceed its allowed size.
+     * @return true if any exceed, false otherwise.
+     */
+    public boolean anySizeExceeds(){
+       return this.getUsername().length() > USERNAME_SIZE || this.getPassword().length() > PASSWORD_SIZE || this.getBio().length() > BIO_SIZE;
+    }
 
     /**
      * Get user's ID

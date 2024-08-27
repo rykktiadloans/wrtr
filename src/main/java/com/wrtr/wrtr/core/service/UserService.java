@@ -4,6 +4,7 @@ import com.wrtr.wrtr.core.config.UserModelDetails;
 import com.wrtr.wrtr.core.model.User;
 import com.wrtr.wrtr.core.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,20 @@ public class UserService implements org.springframework.security.core.userdetail
      */
     public User getUserById(UUID id) throws UsernameNotFoundException {
         User user = userRepository.getUserById(id);
+        if(user == null){
+            throw new UsernameNotFoundException("Could not find user");
+        }
+        return user;
+    }
+
+    /**
+     * Fetches the authenticated user
+     * @param authentication Authentication object
+     * @return The corresponding user
+     * @throws UsernameNotFoundException Thrown if the user is not found
+     */
+    public User getUserByAuth(Authentication authentication) throws UsernameNotFoundException {
+        User user = userRepository.getUserByUsername(authentication.getName());
         if(user == null){
             throw new UsernameNotFoundException("Could not find user");
         }
