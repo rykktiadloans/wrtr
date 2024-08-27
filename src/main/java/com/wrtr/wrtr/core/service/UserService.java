@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -74,6 +75,11 @@ public class UserService implements org.springframework.security.core.userdetail
             throw new UsernameNotFoundException("Could not find user");
         }
         return user;
+    }
+
+    public boolean isUsersPage(Authentication authentication, User user){
+        String correctUser = authentication == null ? "" : authentication.getName();
+        return Objects.equals(correctUser, user.getEmail());
     }
 
     /**

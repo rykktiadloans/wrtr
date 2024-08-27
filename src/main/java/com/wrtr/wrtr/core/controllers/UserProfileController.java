@@ -70,8 +70,7 @@ public class UserProfileController {
         catch (IllegalArgumentException | UsernameNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        String currectUser = authentication == null ? "" : authentication.getName();
-        boolean canEdit = Objects.equals(currectUser, user.getEmail());
+        boolean canEdit = this.userService.isUsersPage(authentication, user);
         model.addAttribute("user", user);
         model.addAttribute("canEdit", canEdit);
         List<Post> posts = user.getPostList();
