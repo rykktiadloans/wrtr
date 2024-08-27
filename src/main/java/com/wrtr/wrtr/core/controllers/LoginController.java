@@ -147,7 +147,7 @@ public class LoginController {
             return "redirect:/editprofile?usernamelen";
         }
         Resource resource = null;
-        if(!userDto.doesProfilePictureExist()){
+        if(userDto.doesProfilePictureExist()){
             resource = this.storageService.save(userDto.getProfilePicture());
             this.resourceRepository.save(resource);
             user.setProfilePicture(resource);
