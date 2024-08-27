@@ -107,7 +107,7 @@ public class LoginController {
     public String getEditProfilePage(Model model, Authentication authentication){
         User user;
         try{
-            user = this.userService.getUserByUsername(authentication.getName());
+            user = this.userService.getUserByAuth(authentication);
         }
         catch (UsernameNotFoundException | NullPointerException e){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
