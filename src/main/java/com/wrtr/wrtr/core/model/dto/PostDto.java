@@ -1,5 +1,7 @@
 package com.wrtr.wrtr.core.model.dto;
 
+import com.wrtr.wrtr.core.model.Post;
+import com.wrtr.wrtr.core.storage.FileSystemStorageService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -9,7 +11,7 @@ import java.util.List;
  * A DTO class for the post object and its attachments
  */
 public class PostDto {
-    private String userId;
+
     private String content;
     private List<MultipartFile> files = new ArrayList<>();
 
@@ -25,24 +27,28 @@ public class PostDto {
      */
     public PostDto(String userId, String content) {
         this.files = new ArrayList<>();
-        this.userId = userId;
         this.content = content;
     }
 
     /**
-     * Get the user's ID
-     * @return User's ID
+     * Check if content of the post is too long
+     * @return True if it's too large, false otherwise
      */
-    public String getUserId() {
-        return userId;
+    public boolean isContentTooLarge(){
+        return this.content.length() > Post.CONTENT_SIZE;
     }
 
     /**
-     * Set user's ID
-     * @param userId User ID
+     * Check if any files are too big
+     * @return True if any are too big, false otherwise
      */
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public boolean isAnyFileTooBig(){
+        for(var file : this.getFiles()){
+            if(file.getSize() > FileSystemStorageService.MAX_SIZE){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

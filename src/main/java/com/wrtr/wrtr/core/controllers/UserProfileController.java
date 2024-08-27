@@ -31,7 +31,7 @@ import java.util.*;
 public class UserProfileController {
 
     @Autowired
-    private UserService userModelDetailsService;
+    private UserService userService;
     @Autowired
     private PostService postService;
     @Autowired
@@ -46,7 +46,7 @@ public class UserProfileController {
     public String getMyProfile(Authentication authentication){
         String id;
         try {
-            id = this.userModelDetailsService.getUserByUsername(authentication.getName()).getId().toString();
+            id = this.userService.getUserByAuth(authentication).getId().toString();
         }
         catch (UsernameNotFoundException | NullPointerException e){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -65,7 +65,7 @@ public class UserProfileController {
     public String getUserProfile(@PathVariable(value = "userId") String userId, Model model, Authentication authentication) {
         User user;
         try{
-            user = this.userModelDetailsService.getUserById(UUID.fromString(userId));
+            user = this.userService.getUserById(UUID.fromString(userId));
         }
         catch (IllegalArgumentException | UsernameNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -123,21 +123,16 @@ public class UserProfileController {
     public String postNewPost(Authentication authentication, Model model, @ModelAttribute("postDto") PostDto postDto){
         User user;
         try {
-            user = this.userModelDetailsService.getUserByUsername(authentication.getName());
+            user = this.userService.getUserByAuth(authentication);
         }
         catch (UsernameNotFoundException | NullPointerException e){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        if(!user.getId().toString().equals(postDto.getUserId())){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-        if(postDto.getContent().length() > 8192){
+        if(postDto.isContentTooLarge()){
             return "redirect:/myprofile";
         }
-        for(var file : postDto.getFiles()){
-            if(file.getSize() > 1049000){
-                return "redirect:/myprofile";
-            }
+        if(postDto.isAnyFileTooBig()){
+            return "redirect:/myprofile";
         }
         Post post = new Post(postDto.getContent(), user);
         Set<Resource> resources = new HashSet<>();
@@ -152,7 +147,7 @@ public class UserProfileController {
         post.setResourceSet(resources);
         post.setDate(LocalDateTime.now());
         user.getPostList().add(post);
-        this.userModelDetailsService.save(user);
+        this.userService.save(user);
         this.postService.save(post);
 
         return "redirect:/myprofile";

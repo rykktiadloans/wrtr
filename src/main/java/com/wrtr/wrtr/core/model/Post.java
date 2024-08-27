@@ -15,12 +15,13 @@ import java.util.UUID;
 @Table(name = "posts")
 public class Post {
 
+    public static final int CONTENT_SIZE = 8192;
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "content", length = 8192, nullable = false)
+    @Column(name = "content", length = CONTENT_SIZE, nullable = false)
     private String content;
 
 

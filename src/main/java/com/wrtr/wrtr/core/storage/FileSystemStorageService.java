@@ -23,6 +23,7 @@ import java.util.Random;
 @Service
 public class FileSystemStorageService implements StorageService{
     private final Path rootLocation;
+    public static final int MAX_SIZE = 1049000;
 
     /**
      * Constructor
@@ -80,5 +81,14 @@ public class FileSystemStorageService implements StorageService{
     @Override
     public Path load(Resource resource) {
         return this.rootLocation.resolve(Paths.get(resource.getPath()));
+    }
+
+    /**
+     * Checks if the file is too large
+     * @param file File which size to check
+     * @return True if it's too large, false otherwise
+     */
+    public boolean isFileTooLarge(MultipartFile file){
+        return file.getSize() > MAX_SIZE;
     }
 }
