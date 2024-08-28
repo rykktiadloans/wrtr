@@ -12,8 +12,17 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 public class User {
+    /**
+     * Maximum length of a username
+     */
     public static final int USERNAME_SIZE = 255;
+    /**
+     * Maximum length of a password
+     */
     public static final int PASSWORD_SIZE = 255;
+    /**
+     * Maximum length of the bio
+     */
     public static final int BIO_SIZE = 4096;
 
     @Id

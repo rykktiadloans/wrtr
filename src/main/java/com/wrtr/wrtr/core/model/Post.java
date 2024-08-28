@@ -15,6 +15,9 @@ import java.util.UUID;
 @Table(name = "posts")
 public class Post {
 
+    /**
+     * Maximum length of the content string
+     */
     public static final int CONTENT_SIZE = 8192;
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

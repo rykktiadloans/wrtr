@@ -23,6 +23,9 @@ import java.util.Random;
 @Service
 public class FileSystemStorageService implements StorageService{
     private final Path rootLocation;
+    /**
+     * Maximum filesize in bytes
+     */
     public static final int MAX_SIZE = 1049000;
 
     /**

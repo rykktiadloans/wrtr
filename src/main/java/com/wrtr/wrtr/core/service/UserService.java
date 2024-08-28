@@ -77,6 +77,12 @@ public class UserService implements org.springframework.security.core.userdetail
         return user;
     }
 
+    /**
+     * Checks whether the user is the same as the one logged in
+     * @param authentication Authentication object
+     * @param user User object
+     * @return True if they are the same user, false otherwise
+     */
     public boolean isUsersPage(Authentication authentication, User user){
         String correctUser = authentication == null ? "" : authentication.getName();
         return Objects.equals(correctUser, user.getEmail());
