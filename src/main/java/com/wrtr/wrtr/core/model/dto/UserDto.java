@@ -1,6 +1,7 @@
 package com.wrtr.wrtr.core.model.dto;
 
 import com.wrtr.wrtr.core.model.User;
+import com.wrtr.wrtr.core.storage.FileSystemStorageService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -63,6 +64,14 @@ public class UserDto {
         return !this.getProfilePicture().isEmpty() &&
                 !List.of("apng", "bmp", "gif", "jpeg", "pjpeg", "png", "svg", "tiff", "webp").contains(split[split.length - 1]);
 
+    }
+
+    /**
+     * Check if the profile picture is too large
+     * @return True if it's too big, false otherwise
+     */
+    public boolean isFileTooBig(){
+        return this.doesProfilePictureExist() && this.getProfilePicture().getSize() > FileSystemStorageService.MAX_SIZE;
     }
 
     /**

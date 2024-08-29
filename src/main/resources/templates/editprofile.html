@@ -31,6 +31,7 @@
                                 <textarea th:field="*{bio}" class="form-control" maxlength="4096"/></textarea>
                             </div>
                             <div class="form-group my-3">
+                                <p id="file-errors"></p>
                                 <input accept="image/*" type="file" th:field="*{profilePicture}" class="form-control-file"/>
                             </div>
                             <input type="submit" value="Submit Edits" class="btn btn-primary my-3"/>
@@ -44,6 +45,7 @@
 
 </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+<script th:src="@{/scripts/fileSizeValidation.js}"></script>
 
 </body>
 </html>
