@@ -1,21 +1,17 @@
 package com.wrtr.wrtr.core.controllers;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Random;
 
 /**
  * Controller that is used to get the resources
@@ -24,23 +20,24 @@ import java.util.Random;
 public class ResourceController {
     /**
      * Get controller that returns the resource. Accessible with GET "/upload-dir/{name}"
+     *
      * @param name Name of the resource
      * @return The data
      */
     @GetMapping(path = "/upload-dir/{name}")
-    public byte[] getResource(@PathVariable(name = "name") String name) {
+    public ResponseEntity<FileSystemResource> getResource(@PathVariable(name = "name") String name) {
         Path path = Path.of("upload-dir/" + name);
         if(!Files.exists(path)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        byte[] bytes = null;
+        FileSystemResource fileSystemResource = new FileSystemResource(path);
         try {
-            bytes = Files.readAllBytes(path);
-        }
-        catch (IOException e){
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(Files.probeContentType(path)))
+                    .body(fileSystemResource);
+        } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return bytes;
 
     }
 }
