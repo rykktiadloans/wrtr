@@ -68,6 +68,7 @@ public class FileSystemStorageService implements StorageService{
                         StandardCopyOption.REPLACE_EXISTING);
             }
             resource.setPath(inter.toString());
+            resource.setName(file.getOriginalFilename());
 
         }
         catch (IOException e){

@@ -96,7 +96,7 @@ public class UserProfileController {
                 else {
                     attachments.getLast().add("/" + res.getPath());
                     int lastSlash = res.getPath().lastIndexOf("/");
-                    attachmentNames.getLast().add(res.getPath().substring(lastSlash + 1));
+                    attachmentNames.getLast().add(res.getName());
                 }
             }
         }

@@ -25,7 +25,7 @@ public class PostServiceIntegrationTest {
     @Test
     public void ableToSavePostAndAttachments(){
         Post post = new Post("contento", userService.getUserByEmail("email"));
-        Resource resource = new Resource("path");
+        Resource resource = new Resource("path", "name");
         resource.setPost(post);
         post.getResourceSet().add(resource);
         this.postService.save(post);

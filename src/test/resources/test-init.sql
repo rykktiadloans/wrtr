@@ -9,5 +9,5 @@ INSERT INTO posts
     (id, content, author_id, date)
     VALUES ('5e7389c1-2e11-40e0-b7e6-dc679676f9fe', 'content', 'bd3c743f-32d1-44a9-989d-4bc6a3caa902', current_time());
 INSERT INTO resources
-    (id, post_id, path)
-    VALUES('127b58ff-5c06-462d-bd87-dbd63a91bd32', '5e7389c1-2e11-40e0-b7e6-dc679676f9fe', '')
+    (id, post_id, path, name)
+    VALUES('127b58ff-5c06-462d-bd87-dbd63a91bd32', '5e7389c1-2e11-40e0-b7e6-dc679676f9fe', '', 'name')

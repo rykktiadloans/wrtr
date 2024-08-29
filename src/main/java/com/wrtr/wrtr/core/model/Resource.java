@@ -23,6 +23,8 @@ public class Resource {
 
     @Column(name = "path", nullable = false)
     private String path;
+    @Column(name = "name", nullable = false)
+    private String name;
 
     /**
      * Empty constructor
@@ -33,8 +35,9 @@ public class Resource {
      * Completeconstructor
      * @param path Path to the file
      */
-    public Resource(String path) {
+    public Resource(String path, String name) {
         this.path = path;
+        this.name = name;
     }
 
     /**
@@ -83,5 +86,13 @@ public class Resource {
      */
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
