@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import javax.xml.crypto.Data;
-
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,7 +22,7 @@ public class UserRepositoryIntegrationTests {
     UserRepository userRepository;
     @Test
     public void getByUsernameCanFindUser(){
-        User user = this.userRepository.getUserByUsername("email");
+        User user = this.userRepository.getUserByEmail("email");
         assertNotNull(user);
     }
 

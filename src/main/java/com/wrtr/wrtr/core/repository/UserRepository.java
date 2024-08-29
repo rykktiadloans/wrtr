@@ -14,12 +14,12 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
     /**
-     * Returns a user with the same username
-     * @param username Username to look for with
+     * Returns a user with the same email
+     * @param email Email to look for with
      * @return Matching user
      */
     @Query("SELECT u FROM User u WHERE u.email= :email")
-    public User getUserByUsername(@Param("email") String username);
+    public User getUserByEmail(@Param("email") String email);
 
     /**
      * Returns a user with the same ID

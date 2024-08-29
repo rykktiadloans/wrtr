@@ -28,7 +28,7 @@ public class UserService implements org.springframework.security.core.userdetail
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User userModel = userRepository.getUserByUsername(username);
+        User userModel = userRepository.getUserByEmail(username);
         if(userModel == null){
             throw new UsernameNotFoundException("Could not find user");
         }
@@ -36,13 +36,13 @@ public class UserService implements org.springframework.security.core.userdetail
     }
 
     /**
-     * Returns a user with a matching username
-     * @param username User's username
+     * Returns a user with a matching email
+     * @param email User's email
      * @return Matching user
      * @throws UsernameNotFoundException Thrown if the user was not found
      */
-    public User getUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.getUserByUsername(username);
+    public User getUserByEmail(String email) throws UsernameNotFoundException {
+        User user = userRepository.getUserByEmail(email);
         if(user == null){
             throw new UsernameNotFoundException("Could not find user");
         }
@@ -70,7 +70,7 @@ public class UserService implements org.springframework.security.core.userdetail
      * @throws UsernameNotFoundException Thrown if the user is not found
      */
     public User getUserByAuth(Authentication authentication) throws UsernameNotFoundException {
-        User user = userRepository.getUserByUsername(authentication.getName());
+        User user = userRepository.getUserByEmail(authentication.getName());
         if(user == null){
             throw new UsernameNotFoundException("Could not find user");
         }

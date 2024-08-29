@@ -1,13 +1,11 @@
 package com.wrtr.wrtr.database;
 
-import com.wrtr.wrtr.core.model.User;
 import com.wrtr.wrtr.core.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -34,12 +32,12 @@ public class UserServiceIntegrationTest {
 
     @Test
     public void canGetByEmail(){
-        assertDoesNotThrow(() -> this.userService.getUserByUsername("email"));
+        assertDoesNotThrow(() -> this.userService.getUserByEmail("email"));
     }
 
     @Test
     public void throwsIfNotFoundInGetByEmail(){
-        assertThrows(UsernameNotFoundException.class, () -> this.userService.getUserByUsername("extra garbage"));
+        assertThrows(UsernameNotFoundException.class, () -> this.userService.getUserByEmail("extra garbage"));
     }
 
     @Test
