@@ -158,4 +158,42 @@ public class LoginController {
         return "redirect:/myprofile";
 
     }
+
+    /**
+     * Return a page for editing the password
+     * @param authentication Authentication object
+     * @return The editpassword template
+     */
+    @GetMapping("/editpassword")
+    public String getEditPassword(Authentication authentication) {
+        User user;
+        try {
+            user = this.userService.getUserByAuth(authentication);
+        }
+        catch (UsernameNotFoundException | NullPointerException e){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        return "editpassword";
+    }
+
+    @PutMapping("/editpassword")
+    public String putEditPassword(Authentication authentication,
+                                  @RequestParam("old") String oldPassword,
+                                  @RequestParam("password") String newPassword){
+        User user;
+        try {
+            user = this.userService.getUserByAuth(authentication);
+        }
+        catch (UsernameNotFoundException | NullPointerException e){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        if(!this.securityConfig.passwordEncoder().matches(oldPassword, user.getPassword())
+                || user.isNewPasswordTooLong(newPassword)){
+            return "redirect:/editpassword?wrongpassword";
+        }
+        user.setPassword(this.securityConfig.passwordEncoder().encode(newPassword));
+        this.userService.save(user);
+        return "redirect:/myprofile";
+
+    }
 }

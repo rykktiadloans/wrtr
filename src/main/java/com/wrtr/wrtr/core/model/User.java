@@ -66,6 +66,15 @@ public class User {
     }
 
     /**
+     * Checks whether the new password is too long or not
+     * @param password The new password to check
+     * @return True if it is too long, false otherwise
+     */
+    public boolean isNewPasswordTooLong(String password){
+        return password.length() > PASSWORD_SIZE;
+    }
+
+    /**
      * Get user's ID
      * @return User's UUID
      */
