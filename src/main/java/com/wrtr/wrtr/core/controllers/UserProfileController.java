@@ -73,7 +73,7 @@ public class UserProfileController {
         boolean canEdit = this.userService.isUsersPage(authentication, user);
         model.addAttribute("user", user);
         model.addAttribute("canEdit", canEdit);
-        List<Post> posts = user.getPostList();
+        List<Post> posts = this.postService.getPostsMadeByUser(user);
         posts.sort(Comparator.comparing(o -> o.getDate().atZone(ZoneId.systemDefault()).toEpochSecond()));
         Collections.reverse(posts);
         List<List<String>> images = new ArrayList<>();
