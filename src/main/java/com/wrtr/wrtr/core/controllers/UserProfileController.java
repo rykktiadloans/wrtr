@@ -102,7 +102,7 @@ public class UserProfileController {
         }
 
         model.addAttribute("posts", posts);
-        model.addAttribute("postDto", new PostDto(user.getId().toString(), ""));
+        model.addAttribute("postDto", new PostDto(user.getId().toString(), new ArrayList<>()));
         model.addAttribute("images", images);
         model.addAttribute("attachments", attachments);
         model.addAttribute("attachmentNames", attachmentNames);
@@ -133,9 +133,9 @@ public class UserProfileController {
         if(postDto.isAnyFileTooBig()){
             return "redirect:/myprofile";
         }
-        Post post = new Post(postDto.getContent(), user);
+        Post post = new Post(postDto.content(), user);
         Set<Resource> resources = new HashSet<>();
-        for(var file: postDto.getFiles()){
+        for(var file: postDto.files()){
             if(file.getName().equals("")){
                 continue;
             }

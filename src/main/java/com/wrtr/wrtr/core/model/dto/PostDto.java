@@ -8,27 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A DTO class for the post object and its attachments
+ * A DTO record for the post object and its attachments
  */
-public class PostDto {
-
-    private String content;
-    private List<MultipartFile> files = new ArrayList<>();
-
-    /**
-     * Empty constructor
-     */
-    public PostDto() {}
-
-    /**
-     * Proper constructor
-     * @param userId Id of the user
-     * @param content Content of the post
-     */
-    public PostDto(String userId, String content) {
-        this.files = new ArrayList<>();
-        this.content = content;
-    }
+public record PostDto(String content, List<MultipartFile> files) {
 
     /**
      * Check if content of the post is too long
@@ -43,43 +25,12 @@ public class PostDto {
      * @return True if any are too big, false otherwise
      */
     public boolean isAnyFileTooBig(){
-        for(var file : this.getFiles()){
-            if(file.getSize() > FileSystemStorageService.MAX_SIZE){
+        for(var file : this.files()){
+            if(FileSystemStorageService.isFileTooLarge(file)){
                 return true;
             }
         }
         return false;
     }
 
-    /**
-     * Get the content of the post
-     * @return Post content
-     */
-    public String getContent() {
-        return content;
-    }
-
-    /**
-     * Set the post content
-     * @param content New content
-     */
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    /**
-     * Get the list of files attached to the post
-     * @return The list of file attachments
-     */
-    public List<MultipartFile> getFiles() {
-        return files;
-    }
-
-    /**
-     * Set the new list of file attachments
-     * @param files New list of file attachments
-     */
-    public void setFiles(List<MultipartFile> files) {
-        this.files = files;
-    }
 }

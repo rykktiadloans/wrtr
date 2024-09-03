@@ -133,7 +133,7 @@ public class LoginController {
         catch (UsernameNotFoundException | NullPointerException e){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        if(userDto.isFileNotAnImage()){
+        if(userDto.doesProfilePictureExist() && userDto.isFileNotAnImage()){
             model.addAttribute("userDto", userDto);
             return "redirect:/editprofile?fileext";
 
@@ -148,12 +148,12 @@ public class LoginController {
         }
         Resource resource = null;
         if(userDto.doesProfilePictureExist() && !userDto.isFileTooBig()){
-            resource = this.storageService.save(userDto.getProfilePicture());
+            resource = this.storageService.save(userDto.profilePicture());
             this.resourceRepository.save(resource);
             user.setProfilePicture(resource);
         }
-        user.setUsername(userDto.getUsername());
-        user.setBio(userDto.getBio());
+        user.setUsername(userDto.username());
+        user.setBio(userDto.bio());
         this.userService.save(user);
         return "redirect:/myprofile";
 

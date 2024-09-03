@@ -92,7 +92,7 @@ public class FileSystemStorageService implements StorageService{
      * @param file File which size to check
      * @return True if it's too large, false otherwise
      */
-    public boolean isFileTooLarge(MultipartFile file){
+    public static boolean isFileTooLarge(MultipartFile file){
         return file.getSize() > MAX_SIZE;
     }
 }
