@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PostTests {
     @Test
     public void postDtoDetectsExceedingContent(){
-        PostDto postDto = new PostDto("", "x".repeat(Post.CONTENT_SIZE + 1));
+        PostDto postDto = new PostDto("x".repeat(Post.CONTENT_SIZE + 1), null);
         assertTrue(postDto.isContentTooLarge());
     }
 }
