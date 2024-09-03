@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A DTO record for the post object and its attachments
+ * A DTO class for the posts
+ * @param content Content of the post
+ * @param files Post's attachments
  */
 public record PostDto(String content, List<MultipartFile> files) {
 

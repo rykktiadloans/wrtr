@@ -8,6 +8,9 @@ import java.util.List;
 
 /**
  * The DTO record for the User objects
+ * @param username User's username
+ * @param bio User's bio
+ * @param profilePicture User's profile picture
  */
 public record UserDto(String username, String bio, MultipartFile profilePicture) {
 

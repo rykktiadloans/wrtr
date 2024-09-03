@@ -176,6 +176,13 @@ public class LoginController {
         return "editpassword";
     }
 
+    /**
+     * An endpoint used for changing user's password
+     * @param authentication Authentication object we use to identify a user
+     * @param oldPassword User's old password
+     * @param newPassword User's new password
+     * @return Asks user to retry if the old password is wrong, redirects to /myprofile otherwise
+     */
     @PutMapping("/editpassword")
     public String putEditPassword(Authentication authentication,
                                   @RequestParam("old") String oldPassword,

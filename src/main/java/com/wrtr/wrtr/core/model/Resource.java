@@ -34,6 +34,7 @@ public class Resource {
     /**
      * Completeconstructor
      * @param path Path to the file
+     * @param name Name of the file
      */
     public Resource(String path, String name) {
         this.path = path;
@@ -88,10 +89,18 @@ public class Resource {
         this.path = path;
     }
 
+    /**
+     * Get the name of the file
+     * @return File's name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Set the name of the file
+     * @param name File's new name
+     */
     public void setName(String name) {
         this.name = name;
     }
