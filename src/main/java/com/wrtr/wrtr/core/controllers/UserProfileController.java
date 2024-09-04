@@ -1,5 +1,6 @@
 package com.wrtr.wrtr.core.controllers;
 
+import com.wrtr.wrtr.core.exceptions.PostNotFoundException;
 import com.wrtr.wrtr.core.model.Post;
 import com.wrtr.wrtr.core.model.Resource;
 import com.wrtr.wrtr.core.model.User;
@@ -13,10 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -151,4 +149,35 @@ public class UserProfileController {
 
         return "redirect:/myprofile";
     }
+
+    /**
+     * Deletes the post with the supplied id
+     * @param id Id of the post to delete
+     * @param authentication Authentication object we use to authenticate the user
+     * @return
+     */
+    @DeleteMapping("/deletepost/{id}")
+    public String deletePost(@PathVariable("id") String id, Authentication authentication){
+        User user;
+        Post post;
+        try {
+            user = this.userService.getUserByAuth(authentication);
+        }
+        catch (NullPointerException | UsernameNotFoundException e){
+            return "redirect:/login";
+        }
+        try {
+            post = this.postService.getPostById(UUID.fromString(id));
+        } catch (PostNotFoundException | IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        if(post.getAuthor() != user){
+            return "redirect:/login";
+        }
+        user.getPostList().remove(post);
+        this.postService.deletePost(post);
+        this.userService.save(user);
+        return "redirect:/myprofile";
+    }
+
 }
