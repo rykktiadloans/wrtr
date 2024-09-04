@@ -6,6 +6,7 @@ import com.wrtr.wrtr.core.model.Resource;
 import com.wrtr.wrtr.core.model.User;
 import com.wrtr.wrtr.core.service.PostService;
 import com.wrtr.wrtr.core.service.UserService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
 @Sql(scripts = {"classpath:test-init.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Transactional
 public class PostServiceIntegrationTest {
     @Autowired
     PostService postService;
@@ -71,6 +73,23 @@ public class PostServiceIntegrationTest {
         assertThrows(PostNotFoundException.class, () -> {
             this.postService.getPostById(UUID.fromString("bc19d892-f486-466b-8a46-6a9181b23e76"));
         });
+    }
+
+    @Test
+    public void canDeleteAllAttachments(){
+        Post post;
+        try {
+            post = this.postService.getPostById(UUID.fromString("bc19d892-f486-466b-8a46-6a9181b23e76"));
+        } catch (PostNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        this.postService.deletePostsAttachments(post);
+        try {
+            assertEquals(this.postService.getPostById(UUID.fromString("bc19d892-f486-466b-8a46-6a9181b23e76")).getResourceSet().size(), 0);
+        } catch (PostNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 

@@ -154,7 +154,7 @@ public class UserProfileController {
      * Deletes the post with the supplied id
      * @param id Id of the post to delete
      * @param authentication Authentication object we use to authenticate the user
-     * @return
+     * @return Redirects to /login if the user isn't logged or doesn't own the post, otherwise redirects to /myprofile
      */
     @DeleteMapping("/deletepost/{id}")
     public String deletePost(@PathVariable("id") String id, Authentication authentication){
@@ -177,6 +177,13 @@ public class UserProfileController {
         this.postService.deletePost(post);
         return "redirect:/myprofile";
     }
+
+    /**
+     * Delete attachments of the post with the matching id
+     * @param id Id of the post whose attachments we want to delete
+     * @param authentication Authentication object we use to identify the user
+     * @return Redirect to login if the user isn't logged in or doesn't own the post, otherwise redirects to /myprofile
+     */
     @DeleteMapping("/deleteattachments/{id}")
     public String deleteAttachments(@PathVariable("id") String id, Authentication authentication){
         User user;

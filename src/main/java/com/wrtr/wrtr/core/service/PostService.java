@@ -79,6 +79,10 @@ public class PostService {
         this.postRepository.delete(post);
     }
 
+    /**
+     * Delete attachments of the supplied post
+     * @param post Post whose attachments we want to delete
+     */
     public void deletePostsAttachments(Post post){
         for(Resource resource : post.getResourceSet()){
             this.resourceRepository.delete(resource);
