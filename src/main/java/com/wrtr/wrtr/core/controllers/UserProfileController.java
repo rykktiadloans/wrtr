@@ -206,4 +206,23 @@ public class UserProfileController {
         return "redirect:/myprofile";
     }
 
+    /**
+     * An endpoint the lists all the users with the similar usernames
+     * @param matchBy String to match by. Users with this string as a substring of their username are found
+     * @param model Model object we use to populate the template
+     * @return The searchusers template
+     */
+    @GetMapping("/search/users")
+    public String getUsersWithMatchingUsername(@RequestParam("username") String matchBy, Model model){
+        List<User> users = this.userService.searchUsersWithSimilarUsername(matchBy).stream().map((user) -> {
+            if(user.getBio().length() < 200){
+                return user;
+            }
+            user.setBio(user.getBio().substring(0, 200).concat("..."));
+            return user;
+        }).toList();
+        model.addAttribute("users", users);
+        return "searchusers";
+    }
+
 }

@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -95,5 +96,14 @@ public class UserService implements org.springframework.security.core.userdetail
      */
     public User save(User user){
         return this.userRepository.save(user);
+    }
+
+    /**
+     * Returns a list of users whose usernames contain a supplied string
+     * @param matchBy String to match by
+     * @return List of matched users
+     */
+    public List<User> searchUsersWithSimilarUsername(String matchBy){
+        return this.userRepository.searchUsersWithSimilarUsername(matchBy);
     }
 }

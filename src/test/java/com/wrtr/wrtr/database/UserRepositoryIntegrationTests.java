@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,6 +31,12 @@ public class UserRepositoryIntegrationTests {
     public void getByIdCanFindUser(){
         User user= this.userRepository.getUserById(UUID.fromString("bd3c743f-32d1-44a9-989d-4bc6a3caa902"));
         assertNotNull(user);
+    }
+
+    @Test
+    public void getUsersWithMatchingUsernames(){
+        List<User> users = this.userRepository.searchUsersWithSimilarUsername("username");
+        assertEquals(users.size(), 2);
     }
 
 }

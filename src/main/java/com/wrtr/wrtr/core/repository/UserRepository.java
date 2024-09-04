@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -28,4 +29,12 @@ public interface UserRepository extends JpaRepository<User, UUID> {
      */
     @Query("SELECT u FROM User u WHERE u.id= :id")
     public User getUserById(@Param("id") UUID id);
+
+    /**
+     * Returns all the users whose username contains the supplied substring
+     * @param matchBy Substring to match by
+     * @return List of matched users
+     */
+    @Query("FROM User u WHERE u.username LIKE CONCAT('%', :matchBy, '%')")
+    public List<User> searchUsersWithSimilarUsername(@Param("matchBy") String matchBy);
 }

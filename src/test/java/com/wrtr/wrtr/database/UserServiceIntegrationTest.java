@@ -1,5 +1,6 @@
 package com.wrtr.wrtr.database;
 
+import com.wrtr.wrtr.core.model.User;
 import com.wrtr.wrtr.core.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,5 +50,10 @@ public class UserServiceIntegrationTest {
     @Test
     public void throwsIfNotFoundInGetById(){
         assertThrows(UsernameNotFoundException.class, () -> this.userService.getUserById(UUID.fromString("6910518d-9ca8-48fe-a20a-1f2fae7943c2")));
+    }
+    @Test
+    public void getUsersWithMatchingUsernames(){
+        List<User> users = this.userService.searchUsersWithSimilarUsername("username");
+        assertEquals(users.size(), 2);
     }
 }

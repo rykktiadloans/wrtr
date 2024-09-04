@@ -5,6 +5,9 @@ DELETE FROM users;
 INSERT INTO users
     (id, username, email, password, role)
     VALUES ('bd3c743f-32d1-44a9-989d-4bc6a3caa902', 'username', 'email', 'password', 'role');
+INSERT INTO users
+    (id, username, email, password, role)
+    VALUES ('cfaadbbb-4f0d-4ef6-9ce3-bffcf874aad0', 'username-again', 'email2', 'password', 'role');
 INSERT INTO posts
     (id, content, author_id, date)
     VALUES ('5e7389c1-2e11-40e0-b7e6-dc679676f9fe', 'content', 'bd3c743f-32d1-44a9-989d-4bc6a3caa902', DATE '2023-01-01');
