@@ -83,11 +83,17 @@
                         <small th:text="${T(java.time.format.DateTimeFormatter).ofPattern('dd MMM, yyyy HH:mm').format(post.date)}" class="text-body-secondary"></small>
 
                     </div>
-                    <div>
-                        <form th:if="${canEdit}" action="#" th:action="@{/deletepost} + '/' + ${post.id}" th:method="delete" >
-                            <input type="submit" class="btn btn-danger m-3" value="Delete post">
+                    <div class="container">
+                        <div class="row">
+                            <form th:if="${canEdit}" action="#" th:action="@{/deletepost} + '/' + ${post.id}" th:method="delete" class="col">
+                                <input type="submit" class="btn btn-danger m-3" value="Delete post">
 
-                        </form>
+                            </form>
+                            <form th:if="${canEdit}" action="#" th:action="@{/deleteattachments} + '/' + ${post.id}" th:method="delete" class="col">
+                                <input type="submit" class="btn btn-warning m-3" value="Delete attachments">
+
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

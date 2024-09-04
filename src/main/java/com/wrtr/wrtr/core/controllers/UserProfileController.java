@@ -174,9 +174,28 @@ public class UserProfileController {
         if(post.getAuthor() != user){
             return "redirect:/login";
         }
-        user.getPostList().remove(post);
         this.postService.deletePost(post);
-        this.userService.save(user);
+        return "redirect:/myprofile";
+    }
+    @DeleteMapping("/deleteattachments/{id}")
+    public String deleteAttachments(@PathVariable("id") String id, Authentication authentication){
+        User user;
+        Post post;
+        try {
+            user = this.userService.getUserByAuth(authentication);
+        }
+        catch (NullPointerException | UsernameNotFoundException e){
+            return "redirect:/login";
+        }
+        try {
+            post = this.postService.getPostById(UUID.fromString(id));
+        } catch (PostNotFoundException | IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        if(post.getAuthor() != user){
+            return "redirect:/login";
+        }
+        this.postService.deletePostsAttachments(post);
         return "redirect:/myprofile";
     }
 

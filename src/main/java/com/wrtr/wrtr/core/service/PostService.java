@@ -7,11 +7,13 @@ import com.wrtr.wrtr.core.model.Resource;
 import com.wrtr.wrtr.core.model.User;
 import com.wrtr.wrtr.core.repository.PostRepository;
 import com.wrtr.wrtr.core.repository.ResourceRepository;
+import com.wrtr.wrtr.core.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,6 +28,8 @@ public class PostService {
     private PostRepository postRepository;
     @Autowired
     private ResourceRepository resourceRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * Save a post and it's resources to the database
@@ -70,6 +74,17 @@ public class PostService {
      * @param post The post to be deleted
      */
     public void deletePost(Post post){
+        post.getAuthor().getPostList().remove(post);
+        this.userRepository.save(post.getAuthor());
         this.postRepository.delete(post);
+    }
+
+    public void deletePostsAttachments(Post post){
+        for(Resource resource : post.getResourceSet()){
+            this.resourceRepository.delete(resource);
+        }
+        post.getResourceSet().clear();
+        this.save(post);
+
     }
 }
