@@ -27,12 +27,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/scripts/**", "/styles/**", "/register", "/", "/upload-dir/**", "/user/**", "/search/users/**", "/error").permitAll()
+                        .requestMatchers("/scripts/**", "/styles/**", "/images/**", "/static/**",  "/register", "/", "/upload-dir/**", "/user/**", "/search/users/**", "/error").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(form -> form.loginPage("/login").permitAll())
-                .logout((logout) -> logout.logoutUrl("/logout"));
+                .logout((logout) -> logout.logoutUrl("/logout").permitAll());
 
         return http.build();
     }

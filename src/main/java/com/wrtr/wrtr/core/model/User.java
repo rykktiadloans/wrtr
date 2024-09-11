@@ -62,7 +62,7 @@ public class User {
      * @return true if any exceed, false otherwise.
      */
     public boolean anySizeExceeds(){
-       return this.getUsername().length() > USERNAME_SIZE || this.getPassword().length() > PASSWORD_SIZE || this.getBio().length() > BIO_SIZE;
+       return (this.getUsername() != null && this.getUsername().length() > USERNAME_SIZE) || this.getPassword().length() > PASSWORD_SIZE || (this.getBio() != null && this.getBio().length() > BIO_SIZE);
     }
 
     /**

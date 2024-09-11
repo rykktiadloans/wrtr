@@ -1,5 +1,7 @@
 package com.wrtr.wrtr.core.controllers;
 
+import com.wrtr.wrtr.core.storage.FileSystemStorageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,6 +21,10 @@ import java.nio.file.Path;
  */
 @RestController
 public class ResourceController {
+
+    @Autowired
+    private FileSystemStorageService fileSystemStorageService;
+
     /**
      * Get controller that returns the resource. Accessible with GET "/upload-dir/{name}"
      *
@@ -38,6 +45,6 @@ public class ResourceController {
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-
     }
+
 }

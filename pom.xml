@@ -134,10 +134,10 @@
 						<phase>generate-resources</phase>
 						<configuration>
 							<target>
-								<copy todir="${project.build.directory}/classes/static/templates/react">
+								<copy todir="${project.build.directory}/classes/static">
 									<fileset dir="${project.basedir}/src/main/frontend/wrtr/build/static"/>
 								</copy>
-								<copy todir="${project.build.directory}/classes/static/templates/react">
+								<copy todir="${project.build.directory}/classes/templates/react">
 									<fileset dir="${project.basedir}/src/main/frontend/wrtr/build"/>
 								</copy>
 							</target>
