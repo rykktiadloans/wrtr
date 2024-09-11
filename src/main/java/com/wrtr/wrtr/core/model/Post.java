@@ -1,5 +1,7 @@
 package com.wrtr.wrtr.core.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -29,10 +31,12 @@ public class Post {
 
 
     @OneToMany(targetEntity = Resource.class, cascade = CascadeType.REMOVE, mappedBy = "post")
+    @JsonManagedReference
     private Set<Resource> resourceSet;
 
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
+    @JsonBackReference
     private User author;
 
     @Column(name = "date", nullable = false)

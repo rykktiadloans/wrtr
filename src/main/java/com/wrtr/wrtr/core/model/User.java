@@ -1,5 +1,6 @@
 package com.wrtr.wrtr.core.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.wrtr.wrtr.core.model.dto.UserDto;
 import jakarta.persistence.*;
 
@@ -43,6 +44,7 @@ public class User {
     private String bio;
 
     @OneToMany(targetEntity = Post.class, cascade = CascadeType.REMOVE, mappedBy = "author")
+    @JsonManagedReference
     private List<Post> postList;
 
     @OneToOne
