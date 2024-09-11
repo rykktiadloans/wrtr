@@ -1,23 +1,17 @@
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Profile from "./profile";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src="https://localhost:8080/upload-dir/784377652024090317355488.png" className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Router>
+        <div>
+          <Routes>
+            <Route path="/user/:userId" Component={Profile}/>
+          </Routes>
+        </div>
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossOrigin="anonymous" />
+      </Router>
   );
 }
 

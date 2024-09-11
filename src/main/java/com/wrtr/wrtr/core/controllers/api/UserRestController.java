@@ -20,7 +20,7 @@ public class UserRestController {
     private UserService userService;
 
     @GetMapping(path = "/{id}")
-    public User getUser(@PathVariable("id") String id) {
+    public User getApiUser(@PathVariable("id") String id) {
         User user;
         try{
             user = this.userService.getUserById(UUID.fromString(id));
