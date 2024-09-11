@@ -89,12 +89,12 @@ public class UserProfileController {
                     extension = originalFilename.substring(lastDot);
                 }
                 if(List.of(".jpg", ".jpeg", ".png", ".avif", ".gif", ".svg", ".webp", ".bmp").contains(extension)){
-                    images.getLast().add("/" + res.getPath());
+                    images.get(images.size()).add("/" + res.getPath());
                 }
                 else {
-                    attachments.getLast().add("/" + res.getPath());
+                    attachments.get(images.size()).add("/" + res.getPath());
                     int lastSlash = res.getPath().lastIndexOf("/");
-                    attachmentNames.getLast().add(res.getName());
+                    attachmentNames.get(images.size()).add(res.getName());
                 }
             }
         }
