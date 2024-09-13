@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 
-function NewPost() {
+function NewPost({csrfToken = ""}) {
     const [fileErrors, setFileErrors] = useState([]);
     const [disabled, setDisabled] = useState(false);
     return (
         <div className="card my-5">
             <form action="/newpost" method="post" encType="multipart/form-data" className="card-body">
+                <input type="hidden" name="_csrf" value={csrfToken}/>
                 <div className="form-group my-2">
                     <textarea id="content" name="content" className="form-control" maxLength="8192" required></textarea>
                 </div>

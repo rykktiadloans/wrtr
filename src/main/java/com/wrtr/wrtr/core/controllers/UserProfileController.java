@@ -60,53 +60,8 @@ public class UserProfileController {
      * @return The profile page of the user
      */
     @GetMapping(path = "/user/{userId}")
-    public String getUserProfile(@PathVariable(value = "userId") String userId, Model model, Authentication authentication) {
-        User user;
-        try{
-            user = this.userService.getUserById(UUID.fromString(userId));
-        }
-        catch (IllegalArgumentException | UsernameNotFoundException e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        boolean canEdit = this.userService.isUsersPage(authentication, user);
-        model.addAttribute("user", user);
-        model.addAttribute("canEdit", canEdit);
-        List<Post> posts = this.postService.getPostsMadeByUser(user);
-        posts.sort(Comparator.comparing(o -> o.getDate().atZone(ZoneId.systemDefault()).toEpochSecond()));
-        Collections.reverse(posts);
-        List<List<String>> images = new ArrayList<>();
-        List<List<String>> attachments = new ArrayList<>();
-        List<List<String>> attachmentNames = new ArrayList<>();
-        for(var post: posts){
-            images.add(new ArrayList<>());
-            attachments.add(new ArrayList<>());
-            attachmentNames.add(new ArrayList<>());
-            for(var res : post.getResourceSet()){
-                String extension = "";
-                String originalFilename = res.getPath();
-                int lastDot = originalFilename.lastIndexOf(".");
-                if(lastDot != -1){
-                    extension = originalFilename.substring(lastDot);
-                }
-                if(List.of(".jpg", ".jpeg", ".png", ".avif", ".gif", ".svg", ".webp", ".bmp").contains(extension)){
-                    images.get(images.size() - 1).add("/" + res.getPath());
-                }
-                else {
-                    attachments.get(images.size() - 1).add("/" + res.getPath());
-                    int lastSlash = res.getPath().lastIndexOf("/");
-                    attachmentNames.get(images.size() - 1).add(res.getName());
-                }
-            }
-        }
-
-        model.addAttribute("posts", posts);
-        model.addAttribute("postDto", new PostDto(user.getId().toString(), new ArrayList<>()));
-        model.addAttribute("images", images);
-        model.addAttribute("attachments", attachments);
-        model.addAttribute("attachmentNames", attachmentNames);
-        DateTimeFormatter.ofPattern("dd MMM, yyyy HH:mm");
-
-        return "profile";
+    public String getUserProfile(@PathVariable(value = "userId") String userId) {
+        return "react/index";
     }
 
     /**

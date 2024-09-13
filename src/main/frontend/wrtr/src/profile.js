@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useParams } from "react-router-dom";
 import ReactDOM from 'react-dom/client';
 import { Carousel, CarouselCaption, CarouselItem } from "react-bootstrap"
@@ -45,6 +45,8 @@ function Profile(props) {
     const [user, setUser] = useState(getDefaultUser());
     const [posts, setPosts] = useState([]);
     const [canEdit, setCanEdit] = useState(false);
+    const [csrfToken, setCsrfToken] = useState("")
+    
     
     const userId = useParams().userId;
 
@@ -66,6 +68,11 @@ function Profile(props) {
             then(response => response.json()).
             then(data => {
                 setCanEdit(data);
+            });
+        fetch("/api/users/csrf").
+            then(response => response.json()).
+            then(data => {
+                setCsrfToken(data.token);
             });
     }, []);
 
@@ -90,7 +97,7 @@ function Profile(props) {
                                 <br />
                                 <span>{user.bio}</span>
                                 { canEdit ?
-                                    <div>
+                                    <div> 
                                         <a href="/editprofile" className="btn btn-primary m-3">Edit profile</a>
                                         <a href="/editpassword" className="btn btn-primary m-3">Edit password</a>
 
@@ -101,7 +108,7 @@ function Profile(props) {
                             </p>
                         </div>
                         { canEdit ?
-                                <NewPost/>
+                                <NewPost csrfToken={csrfToken}/>
                             : <></>
                         }
                         <div>
@@ -154,11 +161,13 @@ function Profile(props) {
                                                 <div className="row">
                                         { canEdit ?
                                             <>
-                                                <form action={"/deletepost/" + post.id} method="delete" className="col">
+                                                <form action={"/deletepost/" + post.id} method="post" className="col">
+                                            <input type="hidden" name="_csrf" value={csrfToken}/>
                                                     <input type="hidden" name="_method" value="delete"/>
                                                     <input type="submit" className="btn btn-danger m-3" value="Delete post" />
                                                 </form>
-                                                <form action={"/deleteattachments/" + post.id} method="delete" className="col">
+                                                <form action={"/deleteattachments/" + post.id} method="post" className="col">
+                                            <input type="hidden" name="_csrf" value={csrfToken}/>
                                                     <input type="hidden" name="_method" value="delete"/>
                                                     <input type="submit" className="btn btn-warning m-3" value="Delete attachments" />
                                                 </form>

@@ -9,6 +9,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
+import org.springframework.web.multipart.support.MultipartFilter;
 
 /**
  * Configuration of Spring Security
@@ -25,6 +28,8 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        HiddenHttpMethodFilter hiddenHttpMethodFilter = new HiddenHttpMethodFilter();
+        hiddenHttpMethodFilter.setMethodParam("_method");
         http
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/api/**", "/scripts/**", "/styles/**", "/images/**", "/static/**",  "/register", "/", "/upload-dir/**", "/user/**", "/search/users/**", "/error").permitAll()
@@ -33,7 +38,8 @@ public class SecurityConfig {
                 )
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(form -> form.loginPage("/login").permitAll())
-                .logout((logout) -> logout.logoutUrl("/logout").permitAll());
+                .logout((logout) -> logout.logoutUrl("/logout").permitAll())
+                .addFilterAfter(hiddenHttpMethodFilter, CsrfFilter.class);
 
         return http.build();
     }
