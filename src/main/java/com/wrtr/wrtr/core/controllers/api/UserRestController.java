@@ -4,11 +4,9 @@ import com.wrtr.wrtr.core.model.User;
 import com.wrtr.wrtr.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
@@ -30,5 +28,37 @@ public class UserRestController {
         }
         user.setPostList(null);
         return user;
+    }
+
+    @GetMapping(path = "/canEdit")
+    public boolean getApiCanEdit(@RequestParam("userId") String id, Authentication authentication) {
+        User pageUser;
+        User loggedInUser;
+        try{
+            pageUser = this.userService.getUserById(UUID.fromString(id));
+        }
+        catch (IllegalArgumentException | UsernameNotFoundException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        try{
+            loggedInUser = this.userService.getUserByAuth(authentication);
+        }
+        catch (NullPointerException | UsernameNotFoundException e){
+            return false;
+        }
+        return pageUser.getEmail().equals(loggedInUser.getEmail());
+    }
+
+    @GetMapping("/isLoggedIn")
+    public boolean getApiIsLoggedIn(Authentication authentication) {
+        User user;
+        try{
+            user = this.userService.getUserByAuth(authentication);
+        }
+        catch (NullPointerException | UsernameNotFoundException e){
+            return false;
+        }
+        return true;
+
     }
 }

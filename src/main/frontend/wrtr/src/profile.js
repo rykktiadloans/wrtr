@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from "react-router-dom";
 import ReactDOM from 'react-dom/client';
+import { Carousel, CarouselCaption, CarouselItem } from "react-bootstrap"
+import dateFormat from 'dateformat';
+import NewPost from './newpost';
+import MetaTags from './metatags';
 
 function getDefaultUser() {
     const obj = {};
@@ -23,6 +27,7 @@ function jsonToUser(data) {
 function jsonToPosts(data) {
     return data.map((post) => {
         post.key = post.id;
+        post.date = new Date(...post.date.splice(0, 6));
         post.images = post.resourceSet.filter((res) => {
             const extension = res.path.split(".").at(-1);
             return ["jpg", "jpeg", "png", "avif", "gif", "svg", "webp", "bmp"].indexOf(extension) != -1; 
@@ -39,6 +44,7 @@ function jsonToPosts(data) {
 function Profile(props) {
     const [user, setUser] = useState(getDefaultUser());
     const [posts, setPosts] = useState([]);
+    const [canEdit, setCanEdit] = useState(false);
     
     const userId = useParams().userId;
 
@@ -56,11 +62,17 @@ function Profile(props) {
             then(data => {
                 setPosts(jsonToPosts(data));
             });
+        fetch("/api/users/canEdit?userId=" + userId).
+            then(response => response.json()).
+            then(data => {
+                setCanEdit(data);
+            });
     }, []);
 
 
     return (
         <>
+            <MetaTags title={user.username + " / Wrtr"} description="Wrtr userpage"/>
             <link href="/styles/profile.css" rel="stylesheet" />
             <main className="container-md">
                 <div className="row justify-content-center">
@@ -77,34 +89,21 @@ function Profile(props) {
                                 }
                                 <br />
                                 <span>{user.bio}</span>
-                                {
-                                    /*
-                                <div th:if="${canEdit}">
-                                    <a th:href="@{/editprofile}" className="btn btn-primary m-3">Edit profile</a>
-                                    <a th:href="@{/editpassword}" className="btn btn-primary m-3">Edit password</a>
+                                { canEdit ?
+                                    <div>
+                                        <a href="/editprofile" className="btn btn-primary m-3">Edit profile</a>
+                                        <a href="/editpassword" className="btn btn-primary m-3">Edit password</a>
 
-                                </div>
-                                    */
+                                    </div>
+                                    : <></>
                                 }
 
                             </p>
                         </div>
-                        { /*
-                        <div th:if="${canEdit}" className="card my-5">
-                            <form action="#" th:action="@{/newpost}" th:object="${postDto}" method="post" enctype="multipart/form-data" className="card-body">
-                                <div className="form-group my-2">
-                                    <textarea th:field="*{content}" className="form-control" maxlength="8192" required></textarea>
-                                </div>
-                                <div className="form-group my-2">
-                                    <p id="file-errors"></p>
-                                    <input type="file" th:field="*{files}" className="from-control-file" multiple />
-                                </div>
-                                <input value="Submit" type="submit" className="btn btn-primary my-2" />
-
-                            </form>
-
-                        </div>
-                            */}
+                        { canEdit ?
+                                <NewPost/>
+                            : <></>
+                        }
                         <div>
                             {
                                 posts.map((post, index) => {
@@ -116,28 +115,27 @@ function Profile(props) {
                                             <div className="card-body">
                                                 <p className="card-text">{post.content}</p>
                                                 { post.images.length > 0 ? 
-                                                    <div id={'carousel' + index} className="carousel carsize slide " >
-                                                        <div className="carousel-inner">
-                                                            {post.images.map((image, imageIndex) => {
-                                                                return (
-                                                                    <div key={image.id + imageIndex} className={"carousel-item" + (imageIndex === 0 ? " active" : "")}>
-                                                                        <img src={"/" + image.path} className="d-block w-100" />
-                                                                        <div className="carousel-caption d-none d-md-block">
-                                                                            <p>{(imageIndex + 1) + "/" + post.images.length }</p>
-                                                                        </div>
-                                                                    </div>
-                                                                );
-                                                            })}
-                                                        </div>
-                                                        <button className="carousel-control-prev" type="button" data-bs-target={'#carousel' + index} data-bs-slide="prev">
+                                                    <Carousel prevIcon={
+                                                        <span>
                                                             <span className="carousel-control-prev-icon" aria-hidden="true"><b>{'<'}</b></span>
-                                                            <span className="visually-hidden">Previous</span>
-                                                        </button>
-                                                        <button className="carousel-control-next" type="button" data-bs-target={'#carousel' + index} data-bs-slide="next">
-                                                            <span className="carousel-control-next-icon" aria-hidden="true"><b>{'>'}</b></span>
-                                                            <span className="visually-hidden">Next</span>
-                                                        </button>
-                                                    </div>
+                                                        </span>
+                                                    } nextIcon={
+                                                        <span>
+                                                            <span className="carousel-control-prev-icon" aria-hidden="true"><b>{'>'}</b></span>
+                                                        </span>
+                                                    }
+                                                    className="carsize" wrap={false} interval={null} indicators={false}>
+                                                        {post.images.map((image, imageIndex) => {
+                                                            return (
+                                                                <CarouselItem key={image.id + imageIndex} className={"carousel-item" + (imageIndex === 0 ? " active" : "")}>
+                                                                    <img src={"/" + image.path} className="d-block w-100" />
+                                                                    <CarouselCaption className="d-none d-md-block">
+                                                                        <p>{(imageIndex + 1) + "/" + post.images.length }</p>
+                                                                    </CarouselCaption>
+                                                                </CarouselItem>
+                                                            );
+                                                        })}
+                                                    </Carousel>
                                                     : <></>
                                                 }
                                                 {                                                     
@@ -149,21 +147,24 @@ function Profile(props) {
                                                         );
                                                     })
                                                 }
-                                                <small className="text-body-secondary">{post.date}</small>
+                                                <small className="text-body-secondary">{dateFormat(post.date, "dd mmm, yyyy HH:MM")}</small>
 
                                             </div>
                                             <div className="container">
                                                 <div className="row">
-                                        { /*
-                                            <form th:if="${canEdit}" action="#" th:action="@{/deletepost} + '/' + ${post.id}" th:method="delete" className="col">
-                                            <input type="submit" className="btn btn-danger m-3" value="Delete post" />
-
-                                            </form>
-                                            <form th:if="${canEdit}" action="#" th:action="@{/deleteattachments} + '/' + ${post.id}" th:method="delete" className="col">
-                                            <input type="submit" className="btn btn-warning m-3" value="Delete attachments" />
-
-                                            </form>
-                                        */ }
+                                        { canEdit ?
+                                            <>
+                                                <form action={"/deletepost/" + post.id} method="delete" className="col">
+                                                    <input type="hidden" name="_method" value="delete"/>
+                                                    <input type="submit" className="btn btn-danger m-3" value="Delete post" />
+                                                </form>
+                                                <form action={"/deleteattachments/" + post.id} method="delete" className="col">
+                                                    <input type="hidden" name="_method" value="delete"/>
+                                                    <input type="submit" className="btn btn-warning m-3" value="Delete attachments" />
+                                                </form>
+                                            </>
+                                            : <></>
+                                        }
                                                 </div>
                                             </div>
                                         </div>
