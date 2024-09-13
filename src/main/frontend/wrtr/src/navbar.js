@@ -4,9 +4,9 @@ import React, { useState } from "react";
 function NavBar() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    fetch("/api/users/isLoggedIn").
-        then(response => response.json()).
-        then(data => setIsLoggedIn(data));
+    fetch("/api/users/isLoggedIn")
+        .then(response => response.json())
+        .then(data => setIsLoggedIn(data));
 
 
     return (

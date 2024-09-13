@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useLocation, useParams } from "react-router-dom";
-import ReactDOM from 'react-dom/client';
+import React, { useEffect, useState } from 'react';
+import { useParams } from "react-router-dom";
 import { Carousel, CarouselCaption, CarouselItem } from "react-bootstrap"
 import dateFormat from 'dateformat';
 import NewPost from './newpost';
@@ -30,18 +29,18 @@ function jsonToPosts(data) {
         post.date = new Date(...post.date.splice(0, 6));
         post.images = post.resourceSet.filter((res) => {
             const extension = res.path.split(".").at(-1);
-            return ["jpg", "jpeg", "png", "avif", "gif", "svg", "webp", "bmp"].indexOf(extension) != -1; 
+            return ["jpg", "jpeg", "png", "avif", "gif", "svg", "webp", "bmp"].indexOf(extension) !== -1; 
         });
         post.attachments = post.resourceSet.filter((res) => {
             const extension = res.path.split(".").at(-1);
-            return ["jpg", "jpeg", "png", "avif", "gif", "svg", "webp", "bmp"].indexOf(extension) == -1; 
+            return ["jpg", "jpeg", "png", "avif", "gif", "svg", "webp", "bmp"].indexOf(extension) === -1; 
         });
         return post;
     })
 }
 
 
-function Profile(props) {
+function Profile() {
     const [user, setUser] = useState(getDefaultUser());
     const [posts, setPosts] = useState([]);
     const [canEdit, setCanEdit] = useState(false);
@@ -52,29 +51,29 @@ function Profile(props) {
 
     useEffect(() => {
 
-        fetch("/api/users/" + userId).
-            then(response => response.json()).
-            then(data => {
+        fetch("/api/users/" + userId)
+            .then(response => response.json())
+            .then(data => {
                 setUser(jsonToUser(data));
 
             });
 
-        fetch("/api/posts/?userId=" + userId).
-            then(response => response.json()).
-            then(data => {
+        fetch("/api/posts/?userId=" + userId)
+            .then(response => response.json())
+            .then(data => {
                 setPosts(jsonToPosts(data));
             });
-        fetch("/api/users/canEdit?userId=" + userId).
-            then(response => response.json()).
-            then(data => {
+        fetch("/api/users/canEdit?userId=" + userId)
+            .then(response => response.json())
+            .then(data => {
                 setCanEdit(data);
             });
-        fetch("/api/users/csrf").
-            then(response => response.json()).
-            then(data => {
+        fetch("/api/users/csrf")
+            .then(response => response.json())
+            .then(data => {
                 setCsrfToken(data.token);
             });
-    }, []);
+    }, [userId]);
 
 
     return (
@@ -91,8 +90,8 @@ function Profile(props) {
                             <p className="card-text">
                                 {
                                     user.pfpPath === null ? 
-                                        <img src="/images/emptypfp.jpg" className="pfp" /> :
-                                        <img src={"/" + user.pfpPath } className="pfp" />
+                                        <img src="/images/emptypfp.jpg" className="pfp" alt="None set"/> :
+                                        <img src={"/" + user.pfpPath } className="pfp" alt={user.username}/>
                                 }
                                 <br />
                                 <span>{user.bio}</span>
@@ -135,7 +134,7 @@ function Profile(props) {
                                                         {post.images.map((image, imageIndex) => {
                                                             return (
                                                                 <CarouselItem key={image.id + imageIndex} className={"carousel-item" + (imageIndex === 0 ? " active" : "")}>
-                                                                    <img src={"/" + image.path} className="d-block w-100" />
+                                                                    <img src={"/" + image.path} className="d-block w-100" alt={image.name}/>
                                                                     <CarouselCaption className="d-none d-md-block">
                                                                         <p>{(imageIndex + 1) + "/" + post.images.length }</p>
                                                                     </CarouselCaption>
@@ -146,7 +145,7 @@ function Profile(props) {
                                                     : <></>
                                                 }
                                                 {                                                     
-                                                    post.attachments.map((attachment, attachmentIndex) => { 
+                                                    post.attachments.map((attachment) => { 
                                                         return (
                                                             <div key={attachment.id}>
                                                                 <a href={"/" + attachment.path} download>{attachment.name}</a>
