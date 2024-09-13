@@ -16,7 +16,7 @@
         {
           buildInputs = [
             pkgs.stdenv.cc.cc.lib
-            pkgs.nodejs_22
+            pkgs.nodejs_20
             pkgs.glib
           ];
 
