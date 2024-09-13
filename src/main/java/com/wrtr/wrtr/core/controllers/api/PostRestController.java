@@ -18,6 +18,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 
+/**
+ * REST controller class we use to access posts
+ */
 @RestController
 @RequestMapping(path = "/api/posts")
 public class PostRestController {
@@ -26,6 +29,11 @@ public class PostRestController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Gets all the posts made by a user
+     * @param userId Id of the user
+     * @return List of posts made by the user
+     */
     @GetMapping(path = "/")
     public List<Post> getPostsByUser(@RequestParam("userId") String userId) {
         User user;

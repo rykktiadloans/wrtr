@@ -55,8 +55,6 @@ public class UserProfileController {
     /**
      * Builds and return's the selected user's profile page
      * @param userId User's ID passed in the URL
-     * @param model The model object we use to populate the template
-     * @param authentication The authentication object we use to check whether the logged in user should have control of the profile
      * @return The profile page of the user
      */
     @GetMapping(path = "/user/{userId}")

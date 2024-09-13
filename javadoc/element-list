@@ -1,6 +1,7 @@
 com.wrtr.wrtr
 com.wrtr.wrtr.core.config
 com.wrtr.wrtr.core.controllers
+com.wrtr.wrtr.core.controllers.api
 com.wrtr.wrtr.core.exceptions
 com.wrtr.wrtr.core.model
 com.wrtr.wrtr.core.model.dto
