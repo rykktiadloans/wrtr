@@ -9,6 +9,8 @@ import com.wrtr.wrtr.core.repository.PostRepository;
 import com.wrtr.wrtr.core.repository.ResourceRepository;
 import com.wrtr.wrtr.core.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -52,6 +54,18 @@ public class PostService {
      */
     public List<Post> getPostsMadeByUser(User user) {
         List<Post> posts = this.postRepository.getPostsMadeByUser(user);
+        return posts;
+    }
+
+
+    /**
+     * Returns all the posts made by a user
+     * @param user Author of the posts
+     * @param pageable An object that specifies a page
+     * @return Posts made by the user
+     */
+    public Page<Post> getPostsMadeByUser(User user, Pageable pageable) {
+        Page<Post> posts = this.postRepository.getPostsMadeByUser(user, pageable);
         return posts;
     }
 

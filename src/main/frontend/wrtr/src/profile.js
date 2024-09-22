@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from "react-router-dom";
 import { Carousel, CarouselCaption, CarouselItem } from "react-bootstrap"
 import dateFormat from 'dateformat';
@@ -24,6 +24,9 @@ function jsonToUser(data) {
 }
 
 function jsonToPosts(data) {
+    if(data.length === 0 || data === undefined) {
+        return;
+    }
     return data.map((post) => {
         post.key = post.id;
         post.date = new Date(...post.date.splice(0, 6));
@@ -42,14 +45,37 @@ function jsonToPosts(data) {
 
 function Profile() {
     const [user, setUser] = useState(getDefaultUser());
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState(new Array());
     const [canEdit, setCanEdit] = useState(false);
-    const [csrfToken, setCsrfToken] = useState("")
+    const [csrfToken, setCsrfToken] = useState("");
+    const lastPage = useRef(0);
+    const firstTimeRender = useRef(true);
+
     
     
     const userId = useParams().userId;
 
     useEffect(() => {
+        const setNewPage = () => {
+            fetch("/api/posts/?userId=" + userId + "&page=" + lastPage.current)
+                .then(response => response.json())
+                .then(data => {
+                    //console.log(data);
+                    const parsed = jsonToPosts(data);
+                    if(parsed === undefined) {
+                        return;
+                    }
+                    const result = posts.concat(parsed);
+                    setPosts(result);
+                    lastPage.current++;
+                });
+        };
+
+        if(firstTimeRender.current) {
+            setNewPage();
+            firstTimeRender.current = false;
+
+        }
 
         fetch("/api/users/" + userId)
             .then(response => response.json())
@@ -58,11 +84,6 @@ function Profile() {
 
             });
 
-        fetch("/api/posts/?userId=" + userId)
-            .then(response => response.json())
-            .then(data => {
-                setPosts(jsonToPosts(data));
-            });
         fetch("/api/users/canEdit?userId=" + userId)
             .then(response => response.json())
             .then(data => {
@@ -73,7 +94,17 @@ function Profile() {
             .then(data => {
                 setCsrfToken(data.token);
             });
-    }, [userId]);
+
+        const handleScroll = () => {
+            if(window.innerHeight + window.scrollY + 20 >= document.body.offsetHeight) {
+                setNewPage();
+            }
+        };
+        
+        window.removeEventListener("scroll", handleScroll);
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [userId, posts, lastPage]);
 
 
     return (
