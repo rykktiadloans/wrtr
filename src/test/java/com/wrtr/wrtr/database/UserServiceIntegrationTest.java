@@ -56,4 +56,20 @@ public class UserServiceIntegrationTest {
         List<User> users = this.userService.searchUsersWithSimilarUsername("username");
         assertEquals(users.size(), 2);
     }
+
+    @Test
+    public void canAddUserAsAFollower() {
+        User user1 = this.userService.getUserByEmail("email");
+        User user2 = this.userService.getUserByEmail("email2");
+        this.userService.addFollower(user1, user2);
+        assertTrue(user1.getFollowing().contains(user2) && user2.getFollowers().contains(user1));
+    }
+
+    @Test
+    public void canRemoveFollower() {
+        User user1 = this.userService.getUserByEmail("email");
+        User user2 = this.userService.getUserByEmail("email2");
+        this.userService.removeFollower(user1, user2);
+        assertTrue(!user1.getFollowing().contains(user2) && !user2.getFollowers().contains(user1));
+    }
 }

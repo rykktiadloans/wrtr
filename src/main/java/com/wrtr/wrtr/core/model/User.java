@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.wrtr.wrtr.core.model.dto.UserDto;
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -46,6 +48,12 @@ public class User {
     @OneToMany(targetEntity = Post.class, cascade = CascadeType.REMOVE, mappedBy = "author")
     @JsonManagedReference
     private List<Post> postList;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<User> following = new HashSet<>();
+
+    @ManyToMany(mappedBy = "following", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<User> followers = new HashSet<>();
 
     @OneToOne
     @JoinColumn(name = "profile_picture")
@@ -202,5 +210,37 @@ public class User {
      */
     public void setRole(String role) {
         this.role = role;
+    }
+
+    /**
+     * Get a set of users that this user follows
+     * @return Set of users that are followed by this user
+     */
+    public Set<User> getFollowing() {
+        return following;
+    }
+
+    /**
+     * Set a set of users this user follows
+     * @param following Set of users that this user follows that needs to be set
+     */
+    public void setFollowing(Set<User> following) {
+        this.following = following;
+    }
+
+    /**
+     * Get a set of followers
+     * @return Set of followers
+     */
+    public Set<User> getFollowers() {
+        return followers;
+    }
+
+    /**
+     * Set a set of followers
+     * @param followers Set of followers
+     */
+    public void setFollowers(Set<User> followers) {
+        this.followers = followers;
     }
 }

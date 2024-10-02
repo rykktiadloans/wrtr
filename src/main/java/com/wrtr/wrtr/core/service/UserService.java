@@ -79,6 +79,28 @@ public class UserService implements org.springframework.security.core.userdetail
     }
 
     /**
+     * Modify and <em>save</em> the users so that the follower user now follows the following user
+     * @param follower The user that is going to be a follower
+     * @param following The user that the follower wants to follow
+     */
+    public void addFollower(User follower, User following) {
+        follower.getFollowing().add(following);
+        following.getFollowers().add(follower);
+        this.save(following);
+    }
+
+    /**
+     * Modify and <em>save</em> the users to that the follower user no longer follows the following user
+     * @param follower The user that doesn't want to follow the following user
+     * @param following The user that follower used to follow
+     */
+    public void removeFollower(User follower, User following) {
+        follower.getFollowing().remove(following);
+        following.getFollowers().remove(follower);
+        this.save(following);
+    }
+
+    /**
      * Checks whether the user is the same as the one logged in
      * @param authentication Authentication object
      * @param user User object
