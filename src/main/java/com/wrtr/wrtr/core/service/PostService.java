@@ -70,6 +70,17 @@ public class PostService {
     }
 
     /**
+     * Returns all the posts made by users that the supplied user follows
+     * @param user User that follows other users
+     * @param pageable An object that specifies a page
+     * @return Posts made by the users that the supplied user follows
+     */
+    public Page<Post> getPostsMadeByFollowedAccounts(User user, Pageable pageable) {
+        Page<Post> posts = this.postRepository.getPostsMadeByUsers(user.getFollowing(), pageable);
+        return posts;
+    }
+
+    /**
      * Returns post by it's id
      * @param id Id of the post
      * @return Post with the same id

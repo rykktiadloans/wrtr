@@ -49,10 +49,10 @@ public class User {
     @JsonManagedReference
     private List<Post> postList;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     private Set<User> following = new HashSet<>();
 
-    @ManyToMany(mappedBy = "following", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "following", cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     private Set<User> followers = new HashSet<>();
 
     @OneToOne

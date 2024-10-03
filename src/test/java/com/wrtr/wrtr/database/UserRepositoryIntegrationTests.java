@@ -2,6 +2,7 @@ package com.wrtr.wrtr.database;
 
 import com.wrtr.wrtr.core.model.User;
 import com.wrtr.wrtr.core.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
 @Sql(scripts = {"classpath:test-init.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+@Transactional
 public class UserRepositoryIntegrationTests {
     @Autowired
     UserRepository userRepository;

@@ -4,22 +4,26 @@ import com.wrtr.wrtr.core.model.Post;
 import com.wrtr.wrtr.core.model.User;
 import com.wrtr.wrtr.core.repository.PostRepository;
 import com.wrtr.wrtr.core.service.UserService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.parameters.P;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
 @Sql(scripts = {"classpath:test-init.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+@Transactional
 public class PostRepositoryIntegrationTest {
     @Autowired
     PostRepository postRepository;
@@ -39,5 +43,15 @@ public class PostRepositoryIntegrationTest {
         User user = this.userService.getUserByEmail("email");
         List<Post> posts = this.postRepository.getPostsMadeByUser(user);
         assertTrue(posts.get(0).getContent().equals("content2"));
+    }
+
+    @Test
+    public void canGetAllPostsMadeByUsers() {
+        User user1 = this.userService.getUserByEmail("email");
+        User user2 = this.userService.getUserByEmail("email2");
+        user2.getFollowing().add(user1);
+        this.userService.save(user2);
+        assertEquals(this.postRepository.getPostsMadeByUsers(user2.getFollowing(), Pageable.ofSize(10)).get().toList().size(), 2);
+
     }
 }

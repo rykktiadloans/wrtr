@@ -70,6 +70,8 @@ public class UserServiceIntegrationTest {
         User user1 = this.userService.getUserByEmail("email");
         User user2 = this.userService.getUserByEmail("email2");
         this.userService.removeFollower(user1, user2);
+        user1 = this.userService.getUserByEmail("email");
+        user2 = this.userService.getUserByEmail("email2");
         assertTrue(!user1.getFollowing().contains(user2) && !user2.getFollowers().contains(user1));
     }
 }

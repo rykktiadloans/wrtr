@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -40,4 +41,13 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
      */
     @Query("FROM Post post WHERE post.author = :user ORDER BY post.date DESC")
     public Page<Post> getPostsMadeByUser(@Param("user") User user, Pageable pageable);
+
+    /**
+     * Fetches all posts made by a set of users
+     * @param following Authors of the posts
+     * @param pageable An object that specifies a page of the request
+     * @return Posts made by the users
+     */
+    @Query("FROM Post post WHERE post.author in :following ORDER BY post.date DESC")
+    public Page<Post> getPostsMadeByUsers(@Param("following") Set<User> following, Pageable pageable);
 }

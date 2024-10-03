@@ -14,6 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -90,6 +92,14 @@ public class PostServiceIntegrationTest {
         } catch (PostNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    public void canGetAListOfPostsMadeByUsersThatAnotherUserFollows() {
+        User user1 = this.userService.getUserByEmail("email");
+        User user2 = this.userService.getUserByEmail("email2");
+        this.userService.addFollower(user2, user1);
+        assertEquals(this.postService.getPostsMadeByFollowedAccounts(user2, PageRequest.of(0, 10)).toList().size(), 2);
 
     }
 
