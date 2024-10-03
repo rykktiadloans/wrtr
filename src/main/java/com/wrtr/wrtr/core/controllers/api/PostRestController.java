@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,6 +57,19 @@ public class PostRestController {
             posts = this.postService.getPostsMadeByUser(user, PageRequest.of(page, PostRepository.PAGE_SIZE)).stream().toList();
         }
         return posts;
+    }
+
+    @GetMapping("/feed")
+    public List<Post> getFeed(Authentication authentication, @RequestParam(name = "page") Integer page) {
+        User user;
+        try {
+            user = this.userService.getUserByAuth(authentication);
+        }
+        catch (NullPointerException | UsernameNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        return this.postService.getPostsMadeByFollowedAccounts(user, PageRequest.of(page, PostRepository.PAGE_SIZE)).toList();
+
     }
 
 

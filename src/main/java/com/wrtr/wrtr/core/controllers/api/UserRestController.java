@@ -91,4 +91,45 @@ public class UserRestController {
     public CsrfToken getApiCsrfToken(CsrfToken csrfToken) {
         return csrfToken;
     }
+
+    @PutMapping("/{id}/follow")
+    public boolean putSubscribe(@PathVariable("id") String id, Authentication authentication) {
+        User user;
+        User loggedInUser;
+        try {
+            user = this.userService.getUserById(UUID.fromString(id));
+            loggedInUser = this.userService.getUserByAuth(authentication);
+        }
+        catch (UsernameNotFoundException | IllegalArgumentException | NullPointerException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        if(user.getEmail().equals(loggedInUser.getEmail())) {
+            return false;
+        }
+        this.userService.addFollower(loggedInUser, user);
+        return true;
+    }
+
+    @PutMapping("/{id}/unfollow")
+    public boolean putUnSubscribe(@PathVariable("id") String id, Authentication authentication) {
+        User user;
+        User loggedInUser;
+        try {
+            user = this.userService.getUserById(UUID.fromString(id));
+            loggedInUser = this.userService.getUserByAuth(authentication);
+        }
+        catch (UsernameNotFoundException | IllegalArgumentException | NullPointerException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        if(user.getEmail().equals(loggedInUser.getEmail())) {
+            return false;
+        }
+        this.userService.removeFollower(loggedInUser, user);
+        return true;
+    }
+
+
+
 }
