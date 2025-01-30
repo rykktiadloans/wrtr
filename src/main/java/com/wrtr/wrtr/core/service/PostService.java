@@ -5,20 +5,19 @@ import com.wrtr.wrtr.core.exceptions.PostNotFoundException;
 import com.wrtr.wrtr.core.model.Post;
 import com.wrtr.wrtr.core.model.Resource;
 import com.wrtr.wrtr.core.model.User;
+import com.wrtr.wrtr.core.model.dto.PostApiDto;
 import com.wrtr.wrtr.core.repository.PostRepository;
 import com.wrtr.wrtr.core.repository.ResourceRepository;
 import com.wrtr.wrtr.core.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.Pair;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 
 /**
@@ -70,13 +69,44 @@ public class PostService {
     }
 
     /**
+     * Gets a page of PostApiDtos made by a user
+     * @param user Author of the posts
+     * @param pageable Page specification
+     * @return PostApiDtos made by a user
+     */
+    public Page<PostApiDto> getPostApiDtosMadeByUser(User user, Pageable pageable) {
+        Page<PostApiDto> posts = this.postRepository.getPostApiDtosMadeByUser(user, pageable);
+        List<UUID> ids = posts.map(PostApiDto::getPostId).toList();
+        List<Resource> resources = this.resourceRepository.getResourcesOfPosts(ids);
+        for(var resource : resources) {
+            for(var post : posts) {
+                if(post.getPostId().compareTo(resource.getPost().getId()) == 0) {
+                    post.getResourceSet().add(resource);
+                    break;
+                }
+            }
+        }
+        return posts;
+    }
+
+    /**
      * Returns all the posts made by users that the supplied user follows
      * @param user User that follows other users
      * @param pageable An object that specifies a page
      * @return Posts made by the users that the supplied user follows
      */
-    public Page<Post> getPostsMadeByFollowedAccounts(User user, Pageable pageable) {
-        Page<Post> posts = this.postRepository.getPostsMadeByUsers(user.getFollowing(), pageable);
+    public Page<PostApiDto> getPostApiDtosMadeByFollowedAccounts(User user, Pageable pageable) {
+        Page<PostApiDto> posts = this.postRepository.getPostApiDtosMadeByUsers(user.getFollowing(), pageable);
+        List<UUID> ids = posts.map(PostApiDto::getPostId).toList();
+        List<Resource> resources = this.resourceRepository.getResourcesOfPosts(ids);
+        for(var resource : resources) {
+            for(var post : posts) {
+                if(post.getPostId().compareTo(resource.getPost().getId()) == 0) {
+                    post.getResourceSet().add(resource);
+                    break;
+                }
+            }
+        }
         return posts;
     }
 

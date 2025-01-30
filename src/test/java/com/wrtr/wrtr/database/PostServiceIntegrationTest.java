@@ -4,6 +4,7 @@ import com.wrtr.wrtr.core.exceptions.PostNotFoundException;
 import com.wrtr.wrtr.core.model.Post;
 import com.wrtr.wrtr.core.model.Resource;
 import com.wrtr.wrtr.core.model.User;
+import com.wrtr.wrtr.core.model.dto.PostApiDto;
 import com.wrtr.wrtr.core.service.PostService;
 import com.wrtr.wrtr.core.service.UserService;
 import jakarta.transaction.Transactional;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -49,6 +51,14 @@ public class PostServiceIntegrationTest {
         User user = this.userService.getUserByEmail("email");
         var posts = this.postService.getPostsMadeByUser(user);
         assertEquals(posts.size(), 2);
+    }
+
+    @Test
+    public void canGetAllThePostApiDtosMadeByUser(){
+        User user = this.userService.getUserByEmail("email");
+        Page<PostApiDto> posts = this.postService.getPostApiDtosMadeByUser(user, PageRequest.ofSize(10));
+        assertEquals(posts.toList().size(), 2);
+        assertEquals(posts.toList().get(1).getResourceSet().size(), 1);
     }
 
     @Test
@@ -99,7 +109,7 @@ public class PostServiceIntegrationTest {
         User user1 = this.userService.getUserByEmail("email");
         User user2 = this.userService.getUserByEmail("email2");
         this.userService.addFollower(user2, user1);
-        assertEquals(this.postService.getPostsMadeByFollowedAccounts(user2, PageRequest.of(0, 10)).toList().size(), 2);
+        assertEquals(this.postService.getPostApiDtosMadeByFollowedAccounts(user2, PageRequest.of(0, 10)).toList().size(), 2);
 
     }
 

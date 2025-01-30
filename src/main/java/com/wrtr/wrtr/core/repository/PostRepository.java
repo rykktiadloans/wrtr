@@ -2,6 +2,7 @@ package com.wrtr.wrtr.core.repository;
 
 import com.wrtr.wrtr.core.model.Post;
 import com.wrtr.wrtr.core.model.User;
+import com.wrtr.wrtr.core.model.dto.PostApiDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -43,6 +44,15 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
     public Page<Post> getPostsMadeByUser(@Param("user") User user, Pageable pageable);
 
     /**
+     * Fetches all post API DTO objects made by the user from the database in pages
+     * @param user Author of the posts
+     * @param pageable An object that specifies a page of the request
+     * @return PostApiDtos made by the user
+     */
+    @Query("SELECT new com.wrtr.wrtr.core.model.dto.PostApiDto(post.id, author.username, author.id, post.content, post.date) FROM Post post JOIN post.author author WHERE post.author = :user ORDER BY post.date DESC")
+    public Page<PostApiDto> getPostApiDtosMadeByUser(@Param("user") User user, Pageable pageable);
+
+    /**
      * Fetches all posts made by a set of users
      * @param following Authors of the posts
      * @param pageable An object that specifies a page of the request
@@ -50,4 +60,13 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
      */
     @Query("FROM Post post WHERE post.author in :following ORDER BY post.date DESC")
     public Page<Post> getPostsMadeByUsers(@Param("following") Set<User> following, Pageable pageable);
+
+    /**
+     * Fetches all post API DTO objects made by a set of users
+     * @param following Authors of the posts
+     * @param pageable An object that specifies a page of the request
+     * @return PostApiDtos made by the users
+     */
+    @Query("SELECT new com.wrtr.wrtr.core.model.dto.PostApiDto(post.id, author.username, author.id, post.content, post.date) FROM Post post JOIN post.author author WHERE post.author IN :following ORDER BY post.date DESC")
+    public Page<PostApiDto> getPostApiDtosMadeByUsers(@Param("following") Set<User> following, Pageable pageable);
 }

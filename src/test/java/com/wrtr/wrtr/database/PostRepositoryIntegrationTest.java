@@ -2,6 +2,7 @@ package com.wrtr.wrtr.database;
 
 import com.wrtr.wrtr.core.model.Post;
 import com.wrtr.wrtr.core.model.User;
+import com.wrtr.wrtr.core.model.dto.PostApiDto;
 import com.wrtr.wrtr.core.repository.PostRepository;
 import com.wrtr.wrtr.core.service.UserService;
 import jakarta.transaction.Transactional;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.parameters.P;
 import org.springframework.test.context.jdbc.Sql;
@@ -39,6 +41,13 @@ public class PostRepositoryIntegrationTest {
     }
 
     @Test
+    public void canRepositoryGetAllPostApiDtosByUser(){
+        User user = this.userService.getUserByEmail("email");
+        List<PostApiDto> posts = this.postRepository.getPostApiDtosMadeByUser(user, PageRequest.ofSize(10)).stream().toList();
+        assertEquals(posts.size(), 2);
+    }
+
+    @Test
     public void areThePostsOrderedCorrectly(){
         User user = this.userService.getUserByEmail("email");
         List<Post> posts = this.postRepository.getPostsMadeByUser(user);
@@ -46,7 +55,7 @@ public class PostRepositoryIntegrationTest {
     }
 
     @Test
-    public void canGetAllPostsMadeByUsers() {
+    public void canGetAllPostsMadeByUsersFollowings() {
         User user1 = this.userService.getUserByEmail("email");
         User user2 = this.userService.getUserByEmail("email2");
         user2.getFollowing().add(user1);

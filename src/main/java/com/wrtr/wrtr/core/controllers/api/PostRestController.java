@@ -2,6 +2,7 @@ package com.wrtr.wrtr.core.controllers.api;
 
 import com.wrtr.wrtr.core.model.Post;
 import com.wrtr.wrtr.core.model.User;
+import com.wrtr.wrtr.core.model.dto.PostApiDto;
 import com.wrtr.wrtr.core.repository.PostRepository;
 import com.wrtr.wrtr.core.service.PostService;
 import com.wrtr.wrtr.core.service.UserService;
@@ -40,7 +41,7 @@ public class PostRestController {
      * @return List of posts made by the user
      */
     @GetMapping(path = "/")
-    public List<Post> getPostsByUser(@RequestParam("userId") String userId, @RequestParam(name= "page", required = false) Integer page) {
+    public List<PostApiDto> getPostsByUser(@RequestParam("userId") String userId, @RequestParam(name= "page", required = true) Integer page) {
         User user;
         try{
             user = this.userService.getUserById(UUID.fromString(userId));
@@ -49,18 +50,19 @@ public class PostRestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
-        List<Post> posts;
-        if(page == null) {
-            posts = this.postService.getPostsMadeByUser(user);
-        }
-        else {
-            posts = this.postService.getPostsMadeByUser(user, PageRequest.of(page, PostRepository.PAGE_SIZE)).stream().toList();
-        }
+        List<PostApiDto> posts;
+        posts = this.postService.getPostApiDtosMadeByUser(user, PageRequest.of(page, PostRepository.PAGE_SIZE)).toList();
         return posts;
     }
 
-    @GetMapping("/feed")
-    public List<Post> getFeed(Authentication authentication, @RequestParam(name = "page") Integer page) {
+    /**
+     * Gets a page from the user's feed
+     * @param authentication Authentication object
+     * @param page Specifies a page to look up
+     * @return List of PostApiDtos made by user's that the authenticated user follows
+     */
+    @GetMapping(path = "/feed")
+    public List<PostApiDto> getFeed(Authentication authentication, @RequestParam(name = "page") Integer page) {
         User user;
         try {
             user = this.userService.getUserByAuth(authentication);
@@ -68,7 +70,7 @@ public class PostRestController {
         catch (NullPointerException | UsernameNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        return this.postService.getPostsMadeByFollowedAccounts(user, PageRequest.of(page, PostRepository.PAGE_SIZE)).toList();
+        return this.postService.getPostApiDtosMadeByFollowedAccounts(user, PageRequest.of(page, PostRepository.PAGE_SIZE)).toList();
 
     }
 

@@ -1,5 +1,6 @@
 package com.wrtr.wrtr.core.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.wrtr.wrtr.core.model.dto.UserDto;
 import jakarta.persistence.*;
@@ -50,9 +51,11 @@ public class User {
     private List<Post> postList;
 
     @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @JsonBackReference
     private Set<User> following = new HashSet<>();
 
     @ManyToMany(mappedBy = "following", cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @JsonBackReference
     private Set<User> followers = new HashSet<>();
 
     @OneToOne

@@ -5,6 +5,7 @@ import com.wrtr.wrtr.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
@@ -92,8 +93,14 @@ public class UserRestController {
         return csrfToken;
     }
 
+    /**
+     * Follow the user
+     * @param id ID of the user to follow
+     * @param authentication Authenticated user object
+     * @return Redirects to the user page
+     */
     @PutMapping("/{id}/follow")
-    public boolean putSubscribe(@PathVariable("id") String id, Authentication authentication) {
+    public String putSubscribe(@PathVariable("id") String id, Authentication authentication) {
         User user;
         User loggedInUser;
         try {
@@ -105,14 +112,45 @@ public class UserRestController {
         }
 
         if(user.getEmail().equals(loggedInUser.getEmail())) {
-            return false;
+            return "redirect:/user/" + user.getId().toString();
         }
         this.userService.addFollower(loggedInUser, user);
-        return true;
+        return "redirect:/user/" + user.getId().toString();
     }
 
+    /**
+     * Unfollow the user
+     * @param id ID of the user to follow
+     * @param authentication Authenticated user object
+     * @return Redirects to the user page
+     */
     @PutMapping("/{id}/unfollow")
-    public boolean putUnSubscribe(@PathVariable("id") String id, Authentication authentication) {
+    public String putUnSubscribe(@PathVariable("id") String id, Authentication authentication) {
+        User user;
+        User loggedInUser;
+        try {
+            user = this.userService.getUserById(UUID.fromString(id));
+            loggedInUser = this.userService.getUserByAuth(authentication);
+        }
+        catch (UsernameNotFoundException | IllegalArgumentException | NullPointerException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        if(user.getEmail().equals(loggedInUser.getEmail())) {
+            return "redirect:/user/" + user.getId().toString();
+        }
+        this.userService.removeFollower(loggedInUser, user);
+        return "redirect:/user/" + user.getId().toString();
+    }
+
+    /**
+     * Check that the user is being followed by the authenticated user
+     * @param id ID of the user to inspect
+     * @param authentication Authentication object
+     * @return true if follows, false otherwise
+     */
+    @GetMapping("/{id}/isFollowing")
+    public boolean getIsFollowing(@PathVariable("id") String id, Authentication authentication) {
         User user;
         User loggedInUser;
         try {
@@ -126,9 +164,9 @@ public class UserRestController {
         if(user.getEmail().equals(loggedInUser.getEmail())) {
             return false;
         }
-        this.userService.removeFollower(loggedInUser, user);
-        return true;
+        return loggedInUser.getFollowing().contains(user);
     }
+
 
 
 

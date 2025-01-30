@@ -4,6 +4,7 @@ import { Carousel, CarouselCaption, CarouselItem } from "react-bootstrap"
 import dateFormat from 'dateformat';
 import NewPost from './newpost';
 import MetaTags from './metatags';
+import Posts from "./posts";
 
 function getDefaultUser() {
     const obj = {};
@@ -28,7 +29,7 @@ function jsonToPosts(data) {
         return;
     }
     return data.map((post) => {
-        post.key = post.id;
+        post.key = post.postId;
         post.date = new Date(...post.date.splice(0, 6));
         post.images = post.resourceSet.filter((res) => {
             const extension = res.path.split(".").at(-1);
@@ -43,10 +44,11 @@ function jsonToPosts(data) {
 }
 
 
-function Profile() {
+function Profile({isLoggedIn = false}) {
     const [user, setUser] = useState(getDefaultUser());
     const [posts, setPosts] = useState(new Array());
     const [canEdit, setCanEdit] = useState(false);
+    const [isFollowing, setIsFollowing] = useState(false);
     const [csrfToken, setCsrfToken] = useState("");
     const lastPage = useRef(0);
     const firstTimeRender = useRef(true);
@@ -58,9 +60,9 @@ function Profile() {
     useEffect(() => {
         const setNewPage = () => {
             fetch("/api/posts/?userId=" + userId + "&page=" + lastPage.current)
-                .then(response => response.json())
-                .then(data => {
-                    //console.log(data);
+                .then(response => {
+                    return response.json();
+                }).then(data => {
                     const parsed = jsonToPosts(data);
                     if(parsed === undefined) {
                         return;
@@ -68,7 +70,7 @@ function Profile() {
                     const result = posts.concat(parsed);
                     setPosts(result);
                     lastPage.current++;
-                });
+                }).catch(error => console.log(error));
         };
 
         if(firstTimeRender.current) {
@@ -82,18 +84,28 @@ function Profile() {
             .then(data => {
                 setUser(jsonToUser(data));
 
-            });
+            }).catch(error => console.log(error));
 
         fetch("/api/users/canEdit?userId=" + userId)
             .then(response => response.json())
             .then(data => {
                 setCanEdit(data);
-            });
+            }).catch(error => {});
+
         fetch("/api/users/csrf")
             .then(response => response.json())
             .then(data => {
                 setCsrfToken(data.token);
-            });
+            }).catch(error => {});
+
+        fetch("/api/users/" + userId + "/isFollowing")
+            .then(response => {return response.json();})
+            .then(data => {
+                if(data !== undefined){
+                    setIsFollowing(data);
+                }
+
+            }).catch(error => {});
 
         const handleScroll = () => {
             if(window.innerHeight + window.scrollY + 20 >= document.body.offsetHeight) {
@@ -134,6 +146,20 @@ function Profile() {
                                     </div>
                                     : <></>
                                 }
+                                { !canEdit && isLoggedIn && !isFollowing ? 
+                                        <form action={"/api/users/" + userId + "/follow"} method="post">
+                                            <input type="hidden" name="_csrf" value={csrfToken}/>
+                                            <input type="hidden" name="_method" value="put" />
+                                            <input type="submit" className="btn btn-primary m-3" value="Follow" />
+                                        </form> : <></>
+                                }
+                                { !canEdit && isLoggedIn && isFollowing ? 
+                                        <form action={"/api/users/" + userId + "/unfollow"} method="post">
+                                            <input type="hidden" name="_csrf" value={csrfToken}/>
+                                            <input type="hidden" name="_method" value="put" />
+                                            <input type="submit" className="btn btn-danger m-3" value="Unfollow" />
+                                        </form> : <></>
+                                }
 
                             </p>
                         </div>
@@ -142,75 +168,7 @@ function Profile() {
                             : <></>
                         }
                         <div>
-                            {
-                                posts.map((post, index) => {
-                                    return (
-                                        <div key={post.id + index} className="card my-5">
-                                            <div className="card-header">
-                                                <span>{user.username}</span>
-                                            </div>
-                                            <div className="card-body">
-                                                <p className="card-text">{post.content}</p>
-                                                { post.images.length > 0 ? 
-                                                    <Carousel prevIcon={
-                                                        <span>
-                                                            <span className="carousel-control-prev-icon" aria-hidden="true"><b>{'<'}</b></span>
-                                                        </span>
-                                                    } nextIcon={
-                                                        <span>
-                                                            <span className="carousel-control-prev-icon" aria-hidden="true"><b>{'>'}</b></span>
-                                                        </span>
-                                                    }
-                                                    className="carsize" wrap={false} interval={null} indicators={false}>
-                                                        {post.images.map((image, imageIndex) => {
-                                                            return (
-                                                                <CarouselItem key={image.id + imageIndex} className={"carousel-item" + (imageIndex === 0 ? " active" : "")}>
-                                                                    <img src={"/" + image.path} className="d-block w-100" alt={image.name}/>
-                                                                    <CarouselCaption className="d-none d-md-block">
-                                                                        <p>{(imageIndex + 1) + "/" + post.images.length }</p>
-                                                                    </CarouselCaption>
-                                                                </CarouselItem>
-                                                            );
-                                                        })}
-                                                    </Carousel>
-                                                    : <></>
-                                                }
-                                                {                                                     
-                                                    post.attachments.map((attachment) => { 
-                                                        return (
-                                                            <div key={attachment.id}>
-                                                                <a href={"/" + attachment.path} download>{attachment.name}</a>
-                                                            </div>
-                                                        );
-                                                    })
-                                                }
-                                                <small className="text-body-secondary">{dateFormat(post.date, "dd mmm, yyyy HH:MM")}</small>
-
-                                            </div>
-                                            <div className="container">
-                                                <div className="row">
-                                        { canEdit ?
-                                            <>
-                                                <form action={"/deletepost/" + post.id} method="post" className="col">
-                                            <input type="hidden" name="_csrf" value={csrfToken}/>
-                                                    <input type="hidden" name="_method" value="delete"/>
-                                                    <input type="submit" className="btn btn-danger m-3" value="Delete post" />
-                                                </form>
-                                                <form action={"/deleteattachments/" + post.id} method="post" className="col">
-                                            <input type="hidden" name="_csrf" value={csrfToken}/>
-                                                    <input type="hidden" name="_method" value="delete"/>
-                                                    <input type="submit" className="btn btn-warning m-3" value="Delete attachments" />
-                                                </form>
-                                            </>
-                                            : <></>
-                                        }
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    );
-                                })
-                            }
+                            <Posts posts = {posts} canEdit={canEdit} csrfToken={csrfToken}></Posts>
                         </div>
                     </div>
                 </div>

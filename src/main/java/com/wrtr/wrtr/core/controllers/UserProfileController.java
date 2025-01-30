@@ -63,6 +63,23 @@ public class UserProfileController {
     }
 
     /**
+     * Returns the feed page
+     * @param authentication Authentication object
+     * @return The feed page
+     */
+    @GetMapping(path = "/feed")
+    public String getFeed(Authentication authentication) {
+        User user;
+        try {
+            user = this.userService.getUserByAuth(authentication);
+        }
+        catch (UsernameNotFoundException | NullPointerException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        return "react/index";
+    }
+
+    /**
      * Method that handles creating and saving a new post
      * @param authentication Authentication object we use to check the credentials
      * @param model Model object

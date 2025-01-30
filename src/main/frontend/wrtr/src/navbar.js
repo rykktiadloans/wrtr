@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 
 
-function NavBar() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    fetch("/api/users/isLoggedIn")
-        .then(response => response.json())
-        .then(data => setIsLoggedIn(data));
+function NavBar({isLoggedIn = false}) {
 
 
     return (
@@ -25,6 +20,9 @@ function NavBar() {
                                 <>
                                     <li className="nav-item">
                                         <a href="/myprofile" className="nav-link">My profile</a>
+                                    </li>
+                                    <li className="nav-item">
+                                        <a href="/feed" className="nav-link">Feed</a>
                                     </li>
                                     <li className="nav-item">
                                         <a href="/logout" className="nav-link">Log out</a>
