@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from "react-router-dom";
-import { Carousel, CarouselCaption, CarouselItem } from "react-bootstrap"
-import dateFormat from 'dateformat';
 import NewPost from './newpost';
 import MetaTags from './metatags';
 import Posts from "./posts";
@@ -46,7 +44,7 @@ function jsonToPosts(data) {
 
 function Profile({isLoggedIn = false}) {
     const [user, setUser] = useState(getDefaultUser());
-    const [posts, setPosts] = useState(new Array());
+    const [posts, setPosts] = useState([]);
     const [canEdit, setCanEdit] = useState(false);
     const [isFollowing, setIsFollowing] = useState(false);
     const [csrfToken, setCsrfToken] = useState("");

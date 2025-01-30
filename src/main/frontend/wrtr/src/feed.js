@@ -22,7 +22,7 @@ function jsonToPosts(data) {
 }
 
 function Feed({ isLoggedIn = false }) {
-    const [posts, setPosts] = useState(new Array());
+    const [posts, setPosts] = useState([]);
     const lastPage = useRef(0);
     const firstTimeRender = useRef(true);
 
