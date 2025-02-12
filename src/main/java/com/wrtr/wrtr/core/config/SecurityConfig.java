@@ -24,7 +24,7 @@ public class SecurityConfig {
      * Bean that handles the permissions of different endpoints
      * @param http HttpSecurity object we configure
      * @return The security filter chain
-     * @throws Exception
+     * @throws Exception Exception
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

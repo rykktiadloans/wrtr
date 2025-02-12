@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.wrtr.wrtr.core.model.dto.UserDto;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,6 +46,10 @@ public class User {
 
     @Column(name = "bio", length = BIO_SIZE)
     private String bio;
+
+    @Column(name = "place_last_interacted")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime placeLastInteracted;
 
     @OneToMany(targetEntity = Post.class, cascade = CascadeType.REMOVE, mappedBy = "author")
     @JsonManagedReference
@@ -245,5 +250,21 @@ public class User {
      */
     public void setFollowers(Set<User> followers) {
         this.followers = followers;
+    }
+
+    /**
+     * Get the last time the user interacted with the place canvas
+     * @return Timestamp of last interaction
+     */
+    public LocalDateTime getPlaceLastInteracted() {
+        return placeLastInteracted;
+    }
+
+    /**
+     * Set the new time the user interacted with the place canvas
+     * @param placeLastInteracted New timestamp
+     */
+    public void setPlaceLastInteracted(LocalDateTime placeLastInteracted) {
+        this.placeLastInteracted = placeLastInteracted;
     }
 }

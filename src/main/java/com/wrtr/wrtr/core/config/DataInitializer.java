@@ -1,0 +1,24 @@
+package com.wrtr.wrtr.core.config;
+
+import com.wrtr.wrtr.core.service.PlaceCanvasService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
+
+/**
+ * This class' method ensurePlaceCanvasExists is run on startup to make sure that a basic place canvas already exists
+ */
+@Component
+public class DataInitializer {
+    @Autowired
+    private PlaceCanvasService placeCanvasService;
+
+    /**
+     * Is run on application startup to make sure that a place canvas service exists in the database
+     */
+    @EventListener(ApplicationReadyEvent.class)
+    public void ensurePlaceCanvasExists() {
+        this.placeCanvasService.ensurePlaceCanvasExists();
+    }
+}
