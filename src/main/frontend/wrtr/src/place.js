@@ -63,10 +63,10 @@ function Place({ isLoggedIn = false }) {
         fetch("/api/place/touch?position=" + event.target.selectionStart + "&key=" + event.key + "&_csrf=" + csrfToken, { method: "PATCH" })
             .then(response => response.text())
             .then(data => {
-                if (data == "false" || data == false) {
+                if (data === "false" || data === false) {
                     return false;
                 }
-                else if (data == "true" || data == true) {
+                else if (data === "true" || data === true) {
                     return true;
                 }
                 else {
@@ -74,7 +74,7 @@ function Place({ isLoggedIn = false }) {
                 }
             })
             .then(ret => {
-                if (ret == false) {
+                if (ret === false) {
                     return;
                 }
                 setTimeoutState(60);
