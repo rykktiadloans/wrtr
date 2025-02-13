@@ -73,7 +73,7 @@ public class PlaceCanvasRestController {
      * @return A place canvas or nothing if something went wrong
      */
     @PatchMapping(path = "/touch")
-    public String putTouch(@RequestParam("position") int position, @RequestParam("key") String key, Authentication authentication) {
+    public boolean putTouch(@RequestParam("position") int position, @RequestParam("key") String key, Authentication authentication) {
         User user;
         try {
             user = this.userService.getUserByAuth(authentication);
@@ -83,7 +83,7 @@ public class PlaceCanvasRestController {
         }
         if(user.getPlaceLastInteracted() != null
                 && ChronoUnit.SECONDS.between(user.getPlaceLastInteracted(), LocalDateTime.now()) < this.TIMEOUT_SECONDS) {
-            return "";
+            return false;
         }
         PlaceCanvas placeCanvas = this.placeCanvasService.getPlaceCanvas();
         String content = placeCanvas.getContent();
@@ -93,23 +93,24 @@ public class PlaceCanvasRestController {
             placeCanvas.setContent(begin + end);
             this.placeCanvasService.save(placeCanvas);
         }
-        else if (key.equals("Delete") && position < content.length() && position > 0) {
+        else if (key.equals("Delete") && position < content.length() && position >= 0) {
             String begin = content.substring(0, position);
             String end = content.substring(position + 1);
             placeCanvas.setContent(begin + end);
             this.placeCanvasService.save(placeCanvas);
         }
-        else if (key.length() == 1 && position < content.length() && position > 0 && content.length() <= PlaceCanvas.MAX_SIZE) {
+        else if (key.length() == 1 && position <= content.length() && position >= 0 && content.length() <= PlaceCanvas.MAX_SIZE) {
             String begin = content.substring(0, position);
-            String end = content.substring(position + 1);
+            String end = content.substring(position);
             placeCanvas.setContent(begin + key + end);
             this.placeCanvasService.save(placeCanvas);
         }
         else {
-            return "";
+            return false;
         }
         user.setPlaceLastInteracted(LocalDateTime.now());
-        return placeCanvas.getContent();
+        this.userService.save(user);
+        return true;
 
     }
 }

@@ -14,6 +14,6 @@ public class HomeController {
      */
     @GetMapping(path = "/")
     public String home() {
-        return "home";
+        return "react/index";
     }
 }

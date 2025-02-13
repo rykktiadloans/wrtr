@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Profile from "./profile";
 import NavBar from "./navbar";
 import Feed from "./feed";
+import Home from "./home";
 import { HelmetProvider } from "react-helmet-async";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
                     <Routes>
                         <Route path="/user/:userId" element={<Profile isLoggedIn={isLoggedIn}/>} />
                         <Route path="/feed" element={<Feed isLoggedIn={isLoggedIn} />}/>
+                        <Route path="/" element={<Home isLoggedIn={isLoggedIn} />}/>
                     </Routes>
                 </div>
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossOrigin="anonymous" />

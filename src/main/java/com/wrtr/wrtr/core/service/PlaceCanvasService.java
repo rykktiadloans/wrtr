@@ -28,7 +28,7 @@ public class PlaceCanvasService {
     public void ensurePlaceCanvasExists() {
         var placeCanvas = this.placeCanvasRepository.getCanvas();
         if(placeCanvas == null) {
-            placeCanvas = new PlaceCanvas(1, "Sampley texte");
+            placeCanvas = new PlaceCanvas(1, "");
             this.placeCanvasRepository.save(placeCanvas);
         }
     }
