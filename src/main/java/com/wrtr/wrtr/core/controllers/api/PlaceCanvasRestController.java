@@ -70,7 +70,7 @@ public class PlaceCanvasRestController {
      * @param position Position where the key was pressed
      * @param key Key that was pressed
      * @param authentication User's authentication object
-     * @return A place canvas or nothing if something went wrong
+     * @return Whether the place canvas was changed or not
      */
     @PatchMapping(path = "/touch")
     public boolean putTouch(@RequestParam("position") int position, @RequestParam("key") String key, Authentication authentication) {
