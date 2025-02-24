@@ -40,7 +40,7 @@ public class UserBuilder {
     }
 
     /**
-     * Adds the username to the user
+     * Adds the new username to the user
      * @param username User's username
      * @return The user builder (for chaining)
      */
