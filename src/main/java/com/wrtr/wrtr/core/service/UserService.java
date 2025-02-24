@@ -1,9 +1,15 @@
 package com.wrtr.wrtr.core.service;
 
+import com.wrtr.wrtr.core.config.SecurityConfig;
 import com.wrtr.wrtr.core.config.UserModelDetails;
 import com.wrtr.wrtr.core.model.User;
+import com.wrtr.wrtr.core.model.builders.UserBuilder;
 import com.wrtr.wrtr.core.repository.UserRepository;
+import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,6 +26,11 @@ import java.util.UUID;
 public class UserService implements org.springframework.security.core.userdetails.UserDetailsService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private SecurityConfig securityConfig;
+    @Autowired
+    private Environment environment;
 
     /**
      * Method that allows to get the user details of the user
@@ -127,5 +138,28 @@ public class UserService implements org.springframework.security.core.userdetail
      */
     public List<User> searchUsersWithSimilarUsername(String matchBy){
         return this.userRepository.searchUsersWithSimilarUsername(matchBy);
+    }
+
+    /**
+     * Makes sure that the admin user, as per the environment variables, exists
+     */
+    @Transactional
+    public void ensureAdminUserExists() {
+        String adminEmail = this.environment.getProperty("wrtr.admin.email");
+        User admin = this.userRepository.getUserByEmail(adminEmail);
+        if(admin == null) {
+            Logger logger = LoggerFactory.getLogger(UserService.class);
+            int deleted = this.userRepository.cleanUsersByRole("admin");
+            String message = "Admin accounts deleted: " + deleted;
+            logger.debug(message);
+            admin = new UserBuilder(this.securityConfig)
+                    .addUsername(this.environment.getProperty("wrtr.admin.username"))
+                    .addEmail(adminEmail)
+                    .addPassword(this.environment.getProperty("wrtr.admin.password"))
+                    .addRole("admin")
+                    .build();
+            this.userRepository.save(admin);
+        }
+
     }
 }

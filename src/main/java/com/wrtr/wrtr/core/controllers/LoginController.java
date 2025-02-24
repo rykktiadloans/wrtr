@@ -3,6 +3,7 @@ package com.wrtr.wrtr.core.controllers;
 import com.wrtr.wrtr.core.config.SecurityConfig;
 import com.wrtr.wrtr.core.model.Resource;
 import com.wrtr.wrtr.core.model.User;
+import com.wrtr.wrtr.core.model.builders.UserBuilder;
 import com.wrtr.wrtr.core.model.dto.UserDto;
 import com.wrtr.wrtr.core.repository.ResourceRepository;
 import com.wrtr.wrtr.core.repository.UserRepository;
@@ -80,12 +81,12 @@ public class LoginController {
         if(user.anySizeExceeds()){
             return "redirect:/register?maxlen";
         }
-        user.setPassword(this.securityConfig.passwordEncoder().encode(user.getPassword()));
-        user.setUsername(user.getEmail().replaceAll("@.*$", ""));
-        user.setRole("user");
-        user.setPostList(new ArrayList<>());
-        user.setBio("");
-        user.setProfilePicture(null);
+        user = (new UserBuilder(this.securityConfig))
+                .addUsername(user.getEmail().replaceAll("@.*$", ""))
+                .addEmail(user.getEmail())
+                .addPassword(user.getPassword())
+                .addRole("user")
+                .build();
         try{
             this.userService.save(user);
         }

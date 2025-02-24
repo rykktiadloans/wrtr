@@ -18,7 +18,10 @@ function jsonToUser(data) {
     obj.id = data["id"];
     obj.username = data["username"];
     obj.bio = data["bio"];
-    obj.pfpPath = data["profilePicture"]["path"];
+    obj.pfpPath = "static/images/emptypfp.jpg";
+    if(data["profilePicture"] !== null) {
+        obj.pfpPath = data["profilePicture"]["path"];
+    }
     return obj;
 }
 

@@ -1,7 +1,9 @@
 package com.wrtr.wrtr.core.repository;
 
 import com.wrtr.wrtr.core.model.User;
+import org.hibernate.annotations.Parent;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -19,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
      * @param email Email to look for with
      * @return Matching user
      */
-    @Query("SELECT u FROM User u WHERE u.email= :email")
+    @Query("SELECT u FROM User u WHERE u.email = :email")
     public User getUserByEmail(@Param("email") String email);
 
     /**
@@ -27,7 +29,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
      * @param id User's UUID
      * @return Matching user
      */
-    @Query("SELECT u FROM User u WHERE u.id= :id")
+    @Query("SELECT u FROM User u WHERE u.id = :id")
     public User getUserById(@Param("id") UUID id);
 
     /**
@@ -37,4 +39,14 @@ public interface UserRepository extends JpaRepository<User, UUID> {
      */
     @Query("FROM User u WHERE u.username LIKE CONCAT('%', :matchBy, '%')")
     public List<User> searchUsersWithSimilarUsername(@Param("matchBy") String matchBy);
+
+    /**
+     * Deletes all the users from the database that have a certain role
+     * @param role Role to look for
+     * @return Number of rows deleted
+     */
+    @Modifying
+    @Query("DELETE FROM User u WHERE u.role = :role")
+    public int cleanUsersByRole(@Param("role") String role);
+
 }

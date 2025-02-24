@@ -32,7 +32,11 @@ public class SecurityConfig {
         hiddenHttpMethodFilter.setMethodParam("_method");
         http
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/api/**", "/scripts/**", "/styles/**", "/images/**", "/static/**",  "/register", "/", "/upload-dir/**", "/user/**", "/search/users/**", "/error").permitAll()
+                        .requestMatchers("/api/**", "/scripts/**",
+                                "/styles/**", "/images/**", "/static/**",
+                                "/register", "/", "/upload-dir/**", "/user/**",
+                                "/search/users/**", "/error").permitAll()
+                        .requestMatchers("/actuator/**").hasAuthority("admin")
 
                         .anyRequest().authenticated()
                 )
