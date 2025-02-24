@@ -13,6 +13,13 @@ on:
     types:
       - released
       - published
+  workflow_run:
+    workflows:
+      - Release on push to tag
+    types:
+      - completed
+
+
 
 env:
   REGISTRY: ghcr.io
