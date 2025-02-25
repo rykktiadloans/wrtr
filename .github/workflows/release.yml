@@ -21,7 +21,7 @@ jobs:
           cache: maven
 
       - name: Build with Maven
-        run: mvn -B package --file pom.xml -Djar.finalName=wrtr.jar
+        run: mvn -B jar --file pom.xml -Djar.finalName=wrtr
 
       - name: Run tests
         run: mvn test
