@@ -4,15 +4,16 @@ Uses PostgreSQL as a database.
 
 ## How to run
 ### Locally
-1. Download the source code
-2. Set environment variables for connecting to the database. Example .env file
+1. Set environment variables for connecting to the database. Example .env file
    ```
    SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/db
    SPRING_DATASOURCE_USERNAME=username
    SPRING_DATASOURCE_PASSWORD=password
+   ADMIN_EMAIL=adminmail@samplemain.net
+   ADMIN_USERNAME=admin
+   ADMIN_PASSWORD=secret
    ```
-3. Run `mvn package`
-4. Run `java -jar {name of the jar archive}`
+2. Download the JAR from the releases and run `java -jar {name of the jar archive}`. You can also manually compile the project with `mvn package`
 
 ### Docker with manual compilation
 1. Download the source
