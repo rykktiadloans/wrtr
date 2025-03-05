@@ -18,6 +18,9 @@ function Place({ isLoggedIn = false }) {
         };
 
         let fetchTimeout = () => {
+            if(!isLoggedIn) {
+                return;
+            }
             fetch("/api/place/timeout")
                 .then(response => {
                     return response.text();
@@ -45,7 +48,7 @@ function Place({ isLoggedIn = false }) {
 
         return () => clearInterval(placeFetcher);
 
-    }, []);
+    }, [isLoggedIn]);
 
     let onKeyDownHandler = (event) => {
         if (timeout > 0) {

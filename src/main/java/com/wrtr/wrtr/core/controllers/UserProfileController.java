@@ -42,13 +42,7 @@ public class UserProfileController {
      */
     @GetMapping(path = "/myprofile")
     public String getMyProfile(Authentication authentication){
-        String id;
-        try {
-            id = this.userService.getUserByAuth(authentication).getId().toString();
-        }
-        catch (UsernameNotFoundException | NullPointerException e){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        String id = this.userService.getUserByAuth(authentication).getId().toString();
         return "redirect:/user/".concat(id);
     }
 
@@ -69,13 +63,7 @@ public class UserProfileController {
      */
     @GetMapping(path = "/feed")
     public String getFeed(Authentication authentication) {
-        User user;
-        try {
-            user = this.userService.getUserByAuth(authentication);
-        }
-        catch (UsernameNotFoundException | NullPointerException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        User user = this.userService.getUserByAuth(authentication);
         return "react/index";
     }
 
@@ -88,13 +76,7 @@ public class UserProfileController {
      */
     @PostMapping(path = "/newpost")
     public String postNewPost(Authentication authentication, Model model, @ModelAttribute("postDto") PostDto postDto){
-        User user;
-        try {
-            user = this.userService.getUserByAuth(authentication);
-        }
-        catch (UsernameNotFoundException | NullPointerException e){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        User user = this.userService.getUserByAuth(authentication);
         if(postDto.isContentTooLarge()){
             return "redirect:/myprofile";
         }
@@ -128,14 +110,8 @@ public class UserProfileController {
      */
     @DeleteMapping("/deletepost/{id}")
     public String deletePost(@PathVariable("id") String id, Authentication authentication){
-        User user;
+        User user = this.userService.getUserByAuth(authentication);
         Post post;
-        try {
-            user = this.userService.getUserByAuth(authentication);
-        }
-        catch (NullPointerException | UsernameNotFoundException e){
-            return "redirect:/login";
-        }
         try {
             post = this.postService.getPostById(UUID.fromString(id));
         } catch (PostNotFoundException | IllegalArgumentException e) {
@@ -156,14 +132,8 @@ public class UserProfileController {
      */
     @DeleteMapping("/deleteattachments/{id}")
     public String deleteAttachments(@PathVariable("id") String id, Authentication authentication){
-        User user;
+        User user = this.userService.getUserByAuth(authentication);
         Post post;
-        try {
-            user = this.userService.getUserByAuth(authentication);
-        }
-        catch (NullPointerException | UsernameNotFoundException e){
-            return "redirect:/login";
-        }
         try {
             post = this.postService.getPostById(UUID.fromString(id));
         } catch (PostNotFoundException | IllegalArgumentException e) {

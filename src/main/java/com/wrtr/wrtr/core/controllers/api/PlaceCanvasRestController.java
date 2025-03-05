@@ -47,13 +47,7 @@ public class PlaceCanvasRestController {
      */
     @GetMapping(path = "/timeout")
     public long getTimeout(Authentication authentication) {
-        User user;
-        try {
-            user = this.userService.getUserByAuth(authentication);
-        }
-        catch (UsernameNotFoundException | NullPointerException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        User user = this.userService.getUserByAuth(authentication);
         if(user.getPlaceLastInteracted() == null) {
             user.setPlaceLastInteracted(LocalDateTime.now().minusSeconds(this.TIMEOUT_SECONDS * 2));
             this.userService.save(user);
@@ -74,13 +68,7 @@ public class PlaceCanvasRestController {
      */
     @PatchMapping(path = "/touch")
     public boolean putTouch(@RequestParam("position") int position, @RequestParam("key") String key, Authentication authentication) {
-        User user;
-        try {
-            user = this.userService.getUserByAuth(authentication);
-        }
-        catch (UsernameNotFoundException | NullPointerException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        User user = this.userService.getUserByAuth(authentication);
         if(user.getPlaceLastInteracted() != null
                 && ChronoUnit.SECONDS.between(user.getPlaceLastInteracted(), LocalDateTime.now()) < this.TIMEOUT_SECONDS) {
             return false;

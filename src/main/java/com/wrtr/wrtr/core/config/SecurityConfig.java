@@ -37,9 +37,8 @@ public class SecurityConfig {
                         .requestMatchers("/scripts/**",
                                 "/styles/**", "/images/**", "/static/**",
                                 "/register", "/", "/upload-dir/**", "/user/**",
-                                "/search/users", "/error",
-                                "/api/place/", "/api/place/timeout", "/api/posts/",
-                                "/api/users/*"
+                                "/search/users", "/error", "/api/place/",
+                                "/api/posts/", "/api/users/*"
                                 // Permissions after these need to be reworked on the frontend
                                 // so that they are only requested when isLoggedIn is true
                                 ).permitAll()

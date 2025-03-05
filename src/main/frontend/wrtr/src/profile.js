@@ -32,6 +32,7 @@ function jsonToPosts(data) {
     return data.map((post) => {
         post.key = post.postId;
         post.date = new Date(...post.date.splice(0, 6));
+        post.date.setMonth(post.date.getMonth() - 1);
         post.images = post.resourceSet.filter((res) => {
             const extension = res.path.split(".").at(-1);
             return ["jpg", "jpeg", "png", "avif", "gif", "svg", "webp", "bmp"].indexOf(extension) !== -1;
