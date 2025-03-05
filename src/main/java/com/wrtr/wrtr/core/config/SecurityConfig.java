@@ -32,16 +32,17 @@ public class SecurityConfig {
         hiddenHttpMethodFilter.setMethodParam("_method");
         http
                 .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/api/users/canEdit", "/api/users/isFollowing" )
+                        .authenticated()
                         .requestMatchers("/scripts/**",
                                 "/styles/**", "/images/**", "/static/**",
                                 "/register", "/", "/upload-dir/**", "/user/**",
-                                "/search/users/*", "/error", "/api/users/**",
+                                "/search/users", "/error",
                                 "/api/place/", "/api/place/timeout", "/api/posts/",
-                                "/api/users/*", "/pfpPath",
+                                "/api/users/*"
                                 // Permissions after these need to be reworked on the frontend
                                 // so that they are only requested when isLoggedIn is true
-                                "/api/users/canEdit", "/api/users/isFollowing",
-                                "/api/users/*/follow", "/api/users/*/unfollow").permitAll()
+                                ).permitAll()
                         .requestMatchers("/actuator/**").hasAuthority("admin")
 
                         .anyRequest().authenticated()
