@@ -106,13 +106,7 @@ public class LoginController {
      */
     @GetMapping("/editprofile")
     public String getEditProfilePage(Model model, Authentication authentication){
-        User user;
-        try{
-            user = this.userService.getUserByAuth(authentication);
-        }
-        catch (UsernameNotFoundException | NullPointerException e){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        User user = this.userService.getUserByAuth(authentication);
         UserDto userDto = new UserDto(user.getUsername(), user.getBio(), null);
         model.addAttribute("userDto", userDto);
         return "editprofile";
@@ -127,13 +121,7 @@ public class LoginController {
      */
     @PutMapping("/editprofile")
     public String putEditProfile(@ModelAttribute("userDto") UserDto userDto, Authentication authentication, Model model){
-        User user;
-        try{
-            user = this.userService.getUserByAuth(authentication);
-        }
-        catch (UsernameNotFoundException | NullPointerException e){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        User user = this.userService.getUserByAuth(authentication);
         if(userDto.doesProfilePictureExist() && userDto.isFileNotAnImage()){
             model.addAttribute("userDto", userDto);
             return "redirect:/editprofile?fileext";
@@ -167,13 +155,7 @@ public class LoginController {
      */
     @GetMapping("/editpassword")
     public String getEditPassword(Authentication authentication) {
-        User user;
-        try {
-            user = this.userService.getUserByAuth(authentication);
-        }
-        catch (UsernameNotFoundException | NullPointerException e){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        User user = this.userService.getUserByAuth(authentication);
         return "editpassword";
     }
 
@@ -188,13 +170,7 @@ public class LoginController {
     public String putEditPassword(Authentication authentication,
                                   @RequestParam("old") String oldPassword,
                                   @RequestParam("password") String newPassword){
-        User user;
-        try {
-            user = this.userService.getUserByAuth(authentication);
-        }
-        catch (UsernameNotFoundException | NullPointerException e){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        User user = this.userService.getUserByAuth(authentication);
         if(!this.securityConfig.passwordEncoder().matches(oldPassword, user.getPassword())
                 || user.isNewPasswordTooLong(newPassword)){
             return "redirect:/editpassword?wrongpassword";

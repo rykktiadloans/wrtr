@@ -63,13 +63,7 @@ public class PostRestController {
      */
     @GetMapping(path = "/feed")
     public List<PostApiDto> getFeed(Authentication authentication, @RequestParam(name = "page") Integer page) {
-        User user;
-        try {
-            user = this.userService.getUserByAuth(authentication);
-        }
-        catch (NullPointerException | UsernameNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        User user = this.userService.getUserByAuth(authentication);
         return this.postService.getPostApiDtosMadeByFollowedAccounts(user, PageRequest.of(page, PostRepository.PAGE_SIZE)).toList();
 
     }

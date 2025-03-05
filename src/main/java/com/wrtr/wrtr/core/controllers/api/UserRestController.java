@@ -102,12 +102,11 @@ public class UserRestController {
     @PutMapping("/{id}/follow")
     public String putSubscribe(@PathVariable("id") String id, Authentication authentication) {
         User user;
-        User loggedInUser;
+        User loggedInUser = this.userService.getUserByAuth(authentication);
         try {
             user = this.userService.getUserById(UUID.fromString(id));
-            loggedInUser = this.userService.getUserByAuth(authentication);
         }
-        catch (UsernameNotFoundException | IllegalArgumentException | NullPointerException e) {
+        catch (UsernameNotFoundException | IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
@@ -127,12 +126,11 @@ public class UserRestController {
     @PutMapping("/{id}/unfollow")
     public String putUnSubscribe(@PathVariable("id") String id, Authentication authentication) {
         User user;
-        User loggedInUser;
+        User loggedInUser = this.userService.getUserByAuth(authentication);
         try {
             user = this.userService.getUserById(UUID.fromString(id));
-            loggedInUser = this.userService.getUserByAuth(authentication);
         }
-        catch (UsernameNotFoundException | IllegalArgumentException | NullPointerException e) {
+        catch (UsernameNotFoundException | IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
@@ -152,12 +150,11 @@ public class UserRestController {
     @GetMapping("/{id}/isFollowing")
     public boolean getIsFollowing(@PathVariable("id") String id, Authentication authentication) {
         User user;
-        User loggedInUser;
+        User loggedInUser = this.userService.getUserByAuth(authentication);
         try {
             user = this.userService.getUserById(UUID.fromString(id));
-            loggedInUser = this.userService.getUserByAuth(authentication);
         }
-        catch (UsernameNotFoundException | IllegalArgumentException | NullPointerException e) {
+        catch (UsernameNotFoundException | IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 

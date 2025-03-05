@@ -9,7 +9,7 @@ function getDefaultUser() {
     obj.id = "id";
     obj.username = "username";
     obj.bio = "bio";
-    obj.pfpPath = "pfpPath";
+    obj.pfpPath = "static/images/emptypfp.jpg";
     return obj;
 }
 
@@ -19,33 +19,34 @@ function jsonToUser(data) {
     obj.username = data["username"];
     obj.bio = data["bio"];
     obj.pfpPath = "static/images/emptypfp.jpg";
-    if(data["profilePicture"] !== null) {
+    if (data["profilePicture"] !== null) {
         obj.pfpPath = data["profilePicture"]["path"];
     }
     return obj;
 }
 
 function jsonToPosts(data) {
-    if(data.length === 0 || data === undefined) {
+    if (data.length === 0 || data === undefined) {
         return;
     }
     return data.map((post) => {
         post.key = post.postId;
         post.date = new Date(...post.date.splice(0, 6));
+        post.date.setMonth(post.date.getMonth() - 1);
         post.images = post.resourceSet.filter((res) => {
             const extension = res.path.split(".").at(-1);
-            return ["jpg", "jpeg", "png", "avif", "gif", "svg", "webp", "bmp"].indexOf(extension) !== -1; 
+            return ["jpg", "jpeg", "png", "avif", "gif", "svg", "webp", "bmp"].indexOf(extension) !== -1;
         });
         post.attachments = post.resourceSet.filter((res) => {
             const extension = res.path.split(".").at(-1);
-            return ["jpg", "jpeg", "png", "avif", "gif", "svg", "webp", "bmp"].indexOf(extension) === -1; 
+            return ["jpg", "jpeg", "png", "avif", "gif", "svg", "webp", "bmp"].indexOf(extension) === -1;
         });
         return post;
     })
 }
 
 
-function Profile({isLoggedIn = false}) {
+function Profile({ isLoggedIn = false }) {
     const [user, setUser] = useState(getDefaultUser());
     const [posts, setPosts] = useState([]);
     const [canEdit, setCanEdit] = useState(false);
@@ -54,8 +55,8 @@ function Profile({isLoggedIn = false}) {
     const lastPage = useRef(0);
     const firstTimeRender = useRef(true);
 
-    
-    
+
+
     const userId = useParams().userId;
 
     useEffect(() => {
@@ -65,7 +66,7 @@ function Profile({isLoggedIn = false}) {
                     return response.json();
                 }).then(data => {
                     const parsed = jsonToPosts(data);
-                    if(parsed === undefined) {
+                    if (parsed === undefined) {
                         return;
                     }
                     const result = posts.concat(parsed);
@@ -74,7 +75,7 @@ function Profile({isLoggedIn = false}) {
                 }).catch(error => console.log(error));
         };
 
-        if(firstTimeRender.current) {
+        if (firstTimeRender.current) {
             setNewPage();
             firstTimeRender.current = false;
 
@@ -86,43 +87,45 @@ function Profile({isLoggedIn = false}) {
                 setUser(jsonToUser(data));
 
             }).catch(error => console.log(error));
+        if (isLoggedIn) {
 
-        fetch("/api/users/canEdit?userId=" + userId)
-            .then(response => response.json())
-            .then(data => {
-                setCanEdit(data);
-            }).catch(error => {});
+            fetch("/api/users/canEdit?userId=" + userId)
+                .then(response => response.json())
+                .then(data => {
+                    setCanEdit(data);
+                }).catch(error => { });
 
-        fetch("/api/users/csrf")
-            .then(response => response.json())
-            .then(data => {
-                setCsrfToken(data.token);
-            }).catch(error => {});
+            fetch("/api/users/csrf")
+                .then(response => response.json())
+                .then(data => {
+                    setCsrfToken(data.token);
+                }).catch(error => { });
 
-        fetch("/api/users/" + userId + "/isFollowing")
-            .then(response => {return response.json();})
-            .then(data => {
-                if(data !== undefined){
-                    setIsFollowing(data);
-                }
+            fetch("/api/users/" + userId + "/isFollowing")
+                .then(response => { return response.json(); })
+                .then(data => {
+                    if (data !== undefined) {
+                        setIsFollowing(data);
+                    }
 
-            }).catch(error => {});
+                }).catch(error => { });
+        }
 
         const handleScroll = () => {
-            if(window.innerHeight + window.scrollY + 20 >= document.body.offsetHeight) {
+            if (window.innerHeight + window.scrollY + 20 >= document.body.offsetHeight) {
                 setNewPage();
             }
         };
-        
+
         window.removeEventListener("scroll", handleScroll);
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
-    }, [userId, posts, lastPage]);
+    }, [userId, posts, lastPage, isLoggedIn]);
 
 
     return (
         <>
-            <MetaTags title={user.username + " / Wrtr"} description="Wrtr userpage"/>
+            <MetaTags title={user.username + " / Wrtr"} description="Wrtr userpage" />
             <link href="/styles/profile.css" rel="stylesheet" />
             <main className="container-md">
                 <div className="row justify-content-center">
@@ -133,43 +136,43 @@ function Profile({isLoggedIn = false}) {
                             </div>
                             <p className="card-text">
                                 {
-                                    user.pfpPath === null ? 
-                                        <img src="/images/emptypfp.jpg" className="pfp" alt="None set"/> :
-                                        <img src={"/" + user.pfpPath } className="pfp" alt={user.username}/>
+                                    user.pfpPath === null ?
+                                        <img src="/images/emptypfp.jpg" className="pfp" alt="None set" /> :
+                                        <img src={"/" + user.pfpPath} className="pfp" alt={user.username} />
                                 }
                                 <br />
                                 <span>{user.bio}</span>
-                                { canEdit ?
-                                    <div> 
+                                {canEdit ?
+                                    <div>
                                         <a href="/editprofile" className="btn btn-primary m-3">Edit profile</a>
                                         <a href="/editpassword" className="btn btn-primary m-3">Edit password</a>
 
                                     </div>
                                     : <></>
                                 }
-                                { !canEdit && isLoggedIn && !isFollowing ? 
-                                        <form action={"/api/users/" + userId + "/follow"} method="post">
-                                            <input type="hidden" name="_csrf" value={csrfToken}/>
-                                            <input type="hidden" name="_method" value="put" />
-                                            <input type="submit" className="btn btn-primary m-3" value="Follow" />
-                                        </form> : <></>
+                                {!canEdit && isLoggedIn && !isFollowing ?
+                                    <form action={"/api/users/" + userId + "/follow"} method="post">
+                                        <input type="hidden" name="_csrf" value={csrfToken} />
+                                        <input type="hidden" name="_method" value="put" />
+                                        <input type="submit" className="btn btn-primary m-3" value="Follow" />
+                                    </form> : <></>
                                 }
-                                { !canEdit && isLoggedIn && isFollowing ? 
-                                        <form action={"/api/users/" + userId + "/unfollow"} method="post">
-                                            <input type="hidden" name="_csrf" value={csrfToken}/>
-                                            <input type="hidden" name="_method" value="put" />
-                                            <input type="submit" className="btn btn-danger m-3" value="Unfollow" />
-                                        </form> : <></>
+                                {!canEdit && isLoggedIn && isFollowing ?
+                                    <form action={"/api/users/" + userId + "/unfollow"} method="post">
+                                        <input type="hidden" name="_csrf" value={csrfToken} />
+                                        <input type="hidden" name="_method" value="put" />
+                                        <input type="submit" className="btn btn-danger m-3" value="Unfollow" />
+                                    </form> : <></>
                                 }
 
                             </p>
                         </div>
-                        { canEdit ?
-                                <NewPost csrfToken={csrfToken}/>
+                        {canEdit ?
+                            <NewPost csrfToken={csrfToken} />
                             : <></>
                         }
                         <div>
-                            <Posts posts = {posts} canEdit={canEdit} csrfToken={csrfToken}></Posts>
+                            <Posts posts={posts} canEdit={canEdit} csrfToken={csrfToken}></Posts>
                         </div>
                     </div>
                 </div>
