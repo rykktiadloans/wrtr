@@ -5,6 +5,9 @@ import NavBar from "./navbar";
 import Feed from "./feed";
 import Home from "./home";
 import { HelmetProvider } from "react-helmet-async";
+import Login from "./login";
+import Register from "./register";
+import Logout from "./logout";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,6 +27,10 @@ function App() {
                         <Route path="/user/:userId" element={<Profile isLoggedIn={isLoggedIn}/>} />
                         <Route path="/feed" element={<Feed isLoggedIn={isLoggedIn} />}/>
                         <Route path="/" element={<Home isLoggedIn={isLoggedIn} />}/>
+                        <Route path="/login" element={<Login/>}/>
+                        <Route path="/register" element={<Register/>}/>
+                        <Route path="/logout" element={<Logout/>}/>
+                
                     </Routes>
                 </div>
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossOrigin="anonymous" />
