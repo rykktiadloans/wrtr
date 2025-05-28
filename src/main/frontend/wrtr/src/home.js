@@ -1,7 +1,11 @@
 import React from "react";
 import Place from "./place";
 
-function Home({ isLoggedIn = false }) {
+/**
+ * @param {{currentUser: User?}} Logged in user
+ * @returns {JSX.Element} Home component
+ */
+function Home({currentUser}) {
 
     return (
         <main>
@@ -19,7 +23,7 @@ function Home({ isLoggedIn = false }) {
 
                         <h2>Place canvas</h2>
                         <p>Place canvas is an interactive text playground which every user can edit. The only caveat is that each user is permitted to add or remove <em>one</em> character every minute</p>
-                        <Place isLoggedIn={isLoggedIn}/>
+                        <Place currentUser={currentUser}/>
                     </div>
                 </div>
             </div>

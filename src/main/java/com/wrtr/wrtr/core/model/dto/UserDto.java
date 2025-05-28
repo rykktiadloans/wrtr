@@ -5,6 +5,7 @@ import com.wrtr.wrtr.core.storage.FileSystemStorageService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * The DTO record for the User objects
@@ -12,8 +13,7 @@ import java.util.List;
  * @param bio User's bio
  * @param profilePicture User's profile picture
  */
-public record UserDto(String username, String bio, MultipartFile profilePicture) {
-
+public record UserDto(UUID id, String username, String bio, MultipartFile profilePicture) {
 
     /**
      * Checks if the username is too large

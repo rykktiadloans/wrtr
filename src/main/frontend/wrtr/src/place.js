@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-function Place({ isLoggedIn = false }) {
+/**
+ * @param {{currentUser: User?}} Logged in user
+ * @returns {JSX.Element} Place component
+ */
+function Place({currentUser}) {
     const [content, setContent] = useState("");
     const [timeout, setTimeoutState] = useState(-1);
     const [csrfToken, setCsrfToken] = useState("");
@@ -18,7 +22,7 @@ function Place({ isLoggedIn = false }) {
         };
 
         let fetchTimeout = () => {
-            if(!isLoggedIn) {
+            if(!currentUser) {
                 return;
             }
             fetch("/api/place/timeout")
@@ -48,7 +52,7 @@ function Place({ isLoggedIn = false }) {
 
         return () => clearInterval(placeFetcher);
 
-    }, [isLoggedIn]);
+    }, [currentUser]);
 
     let onKeyDownHandler = (event) => {
         if (timeout > 0) {
@@ -99,14 +103,14 @@ function Place({ isLoggedIn = false }) {
 
     return (
         <>
-            {isLoggedIn && timeout > 0 ?
+            {currentUser && timeout > 0 ?
                 <p>Time out: {timeout} seconds</p>
                 :
                 <></>
             }
-            {!isLoggedIn ?
+            {!currentUser ?
                 <p>You need to be logged in to participate.</p> : <></>}
-            <textarea disabled={!isLoggedIn || timeout > 0}
+            <textarea disabled={!currentUser || timeout > 0}
                 className="form-control"
                 onKeyDown={onKeyDownHandler} value={content}></textarea>
         </>

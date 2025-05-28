@@ -3,61 +3,22 @@ import { useParams } from "react-router-dom";
 import NewPost from './newpost';
 import MetaTags from './metatags';
 import Posts from "./posts";
-
-function getDefaultUser() {
-    const obj = {};
-    obj.id = "id";
-    obj.username = "username";
-    obj.bio = "bio";
-    obj.pfpPath = "static/images/emptypfp.jpg";
-    return obj;
-}
-
-function jsonToUser(data) {
-    const obj = {};
-    obj.id = data["id"];
-    obj.username = data["username"];
-    obj.bio = data["bio"];
-    obj.pfpPath = "static/images/emptypfp.jpg";
-    if (data["profilePicture"] !== null) {
-        obj.pfpPath = data["profilePicture"]["path"];
-    }
-    return obj;
-}
-
-function jsonToPosts(data) {
-    if (data.length === 0 || data === undefined) {
-        return;
-    }
-    return data.map((post) => {
-        post.key = post.postId;
-        post.date = new Date(...post.date.splice(0, 6));
-        post.date.setMonth(post.date.getMonth() - 1);
-        post.images = post.resourceSet.filter((res) => {
-            const extension = res.path.split(".").at(-1);
-            return ["jpg", "jpeg", "png", "avif", "gif", "svg", "webp", "bmp"].indexOf(extension) !== -1;
-        });
-        post.attachments = post.resourceSet.filter((res) => {
-            const extension = res.path.split(".").at(-1);
-            return ["jpg", "jpeg", "png", "avif", "gif", "svg", "webp", "bmp"].indexOf(extension) === -1;
-        });
-        return post;
-    })
-}
-
-
-function Profile({ isLoggedIn = false }) {
-    const [user, setUser] = useState(getDefaultUser());
+import Post from './model/post';
+import User from './model/user';
+/**
+ * @param {{currentUser: User?}} Logged in user
+ * @returns {JSX.Element} Profile component
+ */
+function Profile({currentUser}) {
+    const [user, setUser] = useState(null);
     const [posts, setPosts] = useState([]);
-    const [canEdit, setCanEdit] = useState(false);
     const [isFollowing, setIsFollowing] = useState(false);
     const [csrfToken, setCsrfToken] = useState("");
     const lastPage = useRef(0);
     const firstTimeRender = useRef(true);
+    const canEdit = currentUser != null && user != null && (user.id === currentUser.id || currentUser.role === "admin");
 
-
-
-    const userId = useParams().userId;
+    const userId = useParams()["userId"];
 
     useEffect(() => {
         const setNewPage = () => {
@@ -65,7 +26,7 @@ function Profile({ isLoggedIn = false }) {
                 .then(response => {
                     return response.json();
                 }).then(data => {
-                    const parsed = jsonToPosts(data);
+                    const parsed = Post.fromJson(data);
                     if (parsed === undefined) {
                         return;
                     }
@@ -84,17 +45,10 @@ function Profile({ isLoggedIn = false }) {
         fetch("/api/users/" + userId)
             .then(response => response.json())
             .then(data => {
-                setUser(jsonToUser(data));
+                setUser(User.fromJson(data));
 
             }).catch(error => console.log(error));
-        if (isLoggedIn) {
-
-            fetch("/api/users/canEdit?userId=" + userId)
-                .then(response => response.json())
-                .then(data => {
-                    setCanEdit(data);
-                }).catch(error => { });
-
+        if (currentUser) {
             fetch("/api/users/csrf")
                 .then(response => response.json())
                 .then(data => {
@@ -120,7 +74,11 @@ function Profile({ isLoggedIn = false }) {
         window.removeEventListener("scroll", handleScroll);
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
-    }, [userId, posts, lastPage, isLoggedIn]);
+    }, [userId, posts, lastPage, currentUser]);
+
+    if(user === null) {
+        return (<></>);
+    }
 
 
     return (
@@ -150,14 +108,14 @@ function Profile({ isLoggedIn = false }) {
                                     </div>
                                     : <></>
                                 }
-                                {!canEdit && isLoggedIn && !isFollowing ?
+                                {!canEdit && currentUser && !isFollowing ?
                                     <form action={"/api/users/" + userId + "/follow"} method="post">
                                         <input type="hidden" name="_csrf" value={csrfToken} />
                                         <input type="hidden" name="_method" value="put" />
                                         <input type="submit" className="btn btn-primary m-3" value="Follow" />
                                     </form> : <></>
                                 }
-                                {!canEdit && isLoggedIn && isFollowing ?
+                                {!canEdit && currentUser && isFollowing ?
                                     <form action={"/api/users/" + userId + "/unfollow"} method="post">
                                         <input type="hidden" name="_csrf" value={csrfToken} />
                                         <input type="hidden" name="_method" value="put" />

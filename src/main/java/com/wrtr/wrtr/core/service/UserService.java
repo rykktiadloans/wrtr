@@ -1,9 +1,8 @@
 package com.wrtr.wrtr.core.service;
 
-import com.wrtr.wrtr.core.config.SecurityConfig;
 import com.wrtr.wrtr.core.config.UserModelDetails;
 import com.wrtr.wrtr.core.model.User;
-import com.wrtr.wrtr.core.model.builders.UserBuilder;
+import com.wrtr.wrtr.core.model.builders.UserBuilderFactory;
 import com.wrtr.wrtr.core.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -28,7 +27,7 @@ public class UserService implements org.springframework.security.core.userdetail
     private UserRepository userRepository;
 
     @Autowired
-    private SecurityConfig securityConfig;
+    private UserBuilderFactory userBuilderFactory;
     @Autowired
     private Environment environment;
 
@@ -152,7 +151,7 @@ public class UserService implements org.springframework.security.core.userdetail
             int deleted = this.userRepository.cleanUsersByRole("admin");
             String message = "Admin accounts deleted: " + deleted;
             logger.debug(message);
-            admin = new UserBuilder(this.securityConfig)
+            admin = this.userBuilderFactory.createUserBuilder()
                     .addUsername(this.environment.getProperty("wrtr.admin.username"))
                     .addEmail(adminEmail)
                     .addPassword(this.environment.getProperty("wrtr.admin.password"))

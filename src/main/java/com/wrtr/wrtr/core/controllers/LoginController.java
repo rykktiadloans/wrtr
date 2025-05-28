@@ -3,29 +3,25 @@ package com.wrtr.wrtr.core.controllers;
 import com.wrtr.wrtr.core.config.SecurityConfig;
 import com.wrtr.wrtr.core.model.Resource;
 import com.wrtr.wrtr.core.model.User;
-import com.wrtr.wrtr.core.model.builders.UserBuilder;
+import com.wrtr.wrtr.core.model.builders.UserBuilderFactory;
 import com.wrtr.wrtr.core.model.dto.UserDto;
 import com.wrtr.wrtr.core.repository.ResourceRepository;
-import com.wrtr.wrtr.core.repository.UserRepository;
 import com.wrtr.wrtr.core.service.UserService;
 import com.wrtr.wrtr.core.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Controls creation and access of users
  */
 @Controller
 public class LoginController {
+    @Autowired
+    private UserBuilderFactory userBuilderFactory;
+
     @Autowired
     private SecurityConfig securityConfig;
 
@@ -44,9 +40,7 @@ public class LoginController {
      */
     @GetMapping("/login")
     String login(Model model) {
-        User user = new User();
-        model.addAttribute("user", user);
-        return "login";
+        return "react/index";
     }
 
     /**
@@ -56,9 +50,7 @@ public class LoginController {
      */
     @GetMapping("/register")
     public String register(Model model){
-        User user = new User();
-        model.addAttribute("user", user);
-        return "register";
+        return "react/index";
     }
 
     /**
@@ -67,7 +59,7 @@ public class LoginController {
      */
     @GetMapping("/logout")
     public String logout(){
-        return "logout";
+        return "react/index";
     }
 
     /**
@@ -81,7 +73,7 @@ public class LoginController {
         if(user.anySizeExceeds()){
             return "redirect:/register?maxlen";
         }
-        user = (new UserBuilder(this.securityConfig))
+        user = this.userBuilderFactory.createUserBuilder()
                 .addUsername(user.getEmail().replaceAll("@.*$", ""))
                 .addEmail(user.getEmail())
                 .addPassword(user.getPassword())
@@ -94,7 +86,7 @@ public class LoginController {
             return "redirect:/register?duplicate";
         }
 
-        return "login";
+        return "redirect:/login";
 
     }
 
@@ -107,7 +99,7 @@ public class LoginController {
     @GetMapping("/editprofile")
     public String getEditProfilePage(Model model, Authentication authentication){
         User user = this.userService.getUserByAuth(authentication);
-        UserDto userDto = new UserDto(user.getUsername(), user.getBio(), null);
+        UserDto userDto = new UserDto(user.getId(), user.getUsername(), user.getBio(), null);
         model.addAttribute("userDto", userDto);
         return "editprofile";
     }
