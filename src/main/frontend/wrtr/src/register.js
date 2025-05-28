@@ -6,7 +6,7 @@ import MetaTags from "./metatags";
  * @returns {JSX.Element} Register component
  */
 export default function Register() {
-    const [searchParams, _] = useSearchParams();
+    const [searchParams, ] = useSearchParams();
     const [csrfToken, setCsrfToken] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");

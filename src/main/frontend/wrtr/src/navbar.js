@@ -1,5 +1,6 @@
 import React from "react";
-import User from "./model/user";
+import User from "./model/user"; // eslint-disable-line no-unused-vars
+// We need to include User for that JSDoc support
 
 /**
  * @param {{currentUser: User?}} Logged in user

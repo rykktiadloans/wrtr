@@ -1,7 +1,9 @@
 import React from 'react';
 import { Carousel, CarouselCaption, CarouselItem } from "react-bootstrap"
 import dateFormat from 'dateformat';
-import Post from './model/post';
+import Post from './model/post'; // eslint-disable-line no-unused-vars
+// We need to include User for that JSDoc support
+
 
 /**
  * 

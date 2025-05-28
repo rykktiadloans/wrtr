@@ -6,7 +6,7 @@ import MetaTags from "./metatags";
  * @returns {JSX.Element} Login component
  */
 export default function Login() {
-    const [searchParams, _] = useSearchParams();
+    const [searchParams, ] = useSearchParams();
     const [csrfToken, setCsrfToken] = useState("");
     useEffect(() => {
         fetch("/api/users/csrf")
