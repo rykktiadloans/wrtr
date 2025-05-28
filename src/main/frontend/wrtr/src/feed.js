@@ -1,27 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
 import MetaTags from "./metatags";
+import Post from "./model/post";
 import Posts from "./posts";
 
-function jsonToPosts(data) {
-    if (data.length === 0 || data === undefined) {
-        return;
-    }
-    return data.map((post) => {
-        post.key = post.postId;
-        post.date = new Date(...post.date.splice(0, 6));
-        post.images = post.resourceSet.filter((res) => {
-            const extension = res.path.split(".").at(-1);
-            return ["jpg", "jpeg", "png", "avif", "gif", "svg", "webp", "bmp"].indexOf(extension) !== -1; 
-        });
-        post.attachments = post.resourceSet.filter((res) => {
-            const extension = res.path.split(".").at(-1);
-            return ["jpg", "jpeg", "png", "avif", "gif", "svg", "webp", "bmp"].indexOf(extension) === -1; 
-        });
-        return post;
-    })
-}
-
-function Feed({ isLoggedIn = false }) {
+/**
+ * @param {{currentUser: User?}} Logged in user
+ * @returns {JSX.Element} Feed component
+ */
+function Feed({currentUser}) {
     const [posts, setPosts] = useState([]);
     const lastPage = useRef(0);
     const firstTimeRender = useRef(true);
@@ -31,7 +17,7 @@ function Feed({ isLoggedIn = false }) {
             fetch("/api/posts/feed?page=" + lastPage.current)
                 .then(response => response.json())
                 .then(data => {
-                    const parsed = jsonToPosts(data);
+                    const parsed = Post.fromJson(data);
                     if (parsed === undefined) {
                         return;
                     }
@@ -59,6 +45,10 @@ function Feed({ isLoggedIn = false }) {
         return () => window.removeEventListener("scroll", handleScroll);
     }, [posts, lastPage]);
 
+    if (currentUser === null) {
+        return (<></>);
+    }
+
     return (
         <>
             <MetaTags title={"Feed / Wrtr"} description="Wrtr feed" />
@@ -71,7 +61,7 @@ function Feed({ isLoggedIn = false }) {
                     </div>
                 </div>
             </main>
-            <script src="/scripts/fileSizeValidation.js" crossOrigin='anonymous'></script>
+            <script src="/scripts/fileSizeValidation.js" crossOrigin='anonymous'></script> 
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossOrigin="anonymous"></script>
         </>
 

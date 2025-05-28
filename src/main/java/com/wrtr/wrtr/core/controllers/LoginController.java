@@ -40,9 +40,7 @@ public class LoginController {
      */
     @GetMapping("/login")
     String login(Model model) {
-        User user = new User();
-        model.addAttribute("user", user);
-        return "login";
+        return "react/index";
     }
 
     /**
@@ -52,9 +50,7 @@ public class LoginController {
      */
     @GetMapping("/register")
     public String register(Model model){
-        User user = new User();
-        model.addAttribute("user", user);
-        return "register";
+        return "react/index";
     }
 
     /**
@@ -63,7 +59,7 @@ public class LoginController {
      */
     @GetMapping("/logout")
     public String logout(){
-        return "logout";
+        return "react/index";
     }
 
     /**
@@ -90,7 +86,7 @@ public class LoginController {
             return "redirect:/register?duplicate";
         }
 
-        return "login";
+        return "redirect:/login";
 
     }
 
@@ -103,7 +99,7 @@ public class LoginController {
     @GetMapping("/editprofile")
     public String getEditProfilePage(Model model, Authentication authentication){
         User user = this.userService.getUserByAuth(authentication);
-        UserDto userDto = new UserDto(user.getUsername(), user.getBio(), null);
+        UserDto userDto = new UserDto(user.getId(), user.getUsername(), user.getBio(), null);
         model.addAttribute("userDto", userDto);
         return "editprofile";
     }

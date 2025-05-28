@@ -117,7 +117,7 @@ public class UserProfileController {
         } catch (PostNotFoundException | IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        if(post.getAuthor() != user){
+        if(post.getAuthor() != user || !user.getRole().equals("admin")){
             return "redirect:/login";
         }
         this.postService.deletePost(post);
@@ -139,7 +139,7 @@ public class UserProfileController {
         } catch (PostNotFoundException | IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        if(post.getAuthor() != user){
+        if(post.getAuthor() != user || !user.getRole().equals("admin")){
             return "redirect:/login";
         }
         this.postService.deletePostsAttachments(post);

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Profile from "./profile";
 import NavBar from "./navbar";
@@ -10,26 +10,31 @@ import Register from "./register";
 import Logout from "./logout";
 
 function App() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [currentUser, setCurrentUser] = useState(null);
 
-    fetch("/api/users/isLoggedIn")
-        .then(response => response.json())
-        .then(data => {
-            setIsLoggedIn(data);
-        }).catch(error => {});
+    useEffect(() => {
+        fetch("/api/users/")
+            .then(response => response.json())
+            .then(data => {
+                setCurrentUser(data);
+            }).catch(error => {})
+    }, []);
     
     return (
         <HelmetProvider>
             <Router>
-                <NavBar isLoggedIn={isLoggedIn}/>
+                <NavBar currentUser={currentUser}/>
                 <div>
                     <Routes>
-                        <Route path="/user/:userId" element={<Profile isLoggedIn={isLoggedIn}/>} />
-                        <Route path="/feed" element={<Feed isLoggedIn={isLoggedIn} />}/>
-                        <Route path="/" element={<Home isLoggedIn={isLoggedIn} />}/>
+                        <Route path="/user/:userId" element={<Profile 
+                            currentUser={currentUser}/>} />
+                        <Route path="/feed" element={<Feed 
+                            currentUser={currentUser}/>} />
+                        <Route path="/" element={<Home currentUser={currentUser} />}/>
                         <Route path="/login" element={<Login/>}/>
                         <Route path="/register" element={<Register/>}/>
-                        <Route path="/logout" element={<Logout/>}/>
+                        <Route path="/logout" element={<Logout 
+                            currentUser={currentUser}/>}/>
                 
                     </Routes>
                 </div>

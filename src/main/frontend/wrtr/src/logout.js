@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import MetaTags from "./metatags";
 
-export default function Logout({isLoggedIn = false}) {
+/**
+ * @param {{currentUser: User?}} Logged in user
+ * @returns {JSX.Element} Logout component
+ */
+export default function Logout({currentUser}) {
     const [csrfToken, setCsrfToken] = useState("");
     useEffect(() => {
         fetch("/api/users/csrf")
@@ -9,7 +13,7 @@ export default function Logout({isLoggedIn = false}) {
             .then(data => {
                 setCsrfToken(data.token);
             }).catch(error => { console.log("Couldn't get CSRF token!") });
-    }, [csrfToken]);
+    }, []);
     return (<>
                 <MetaTags title="Log out"/>
 
@@ -18,10 +22,12 @@ export default function Logout({isLoggedIn = false}) {
                     <div class="container-md my-5">
                         <div class="row justify-content-center">
                             <div class="col-md-8">
-                                {isLoggedIn ?
+                                {currentUser ?
                                     <>
                                         <h2>You sure you want to log out?</h2>
                                         <form action="/logout" method="post">
+                                            <input type="hidden" name="_csrf" 
+                                                value={csrfToken}/>
                                             <button type="submit" class="btn btn-primary my-3">Log out</button>
                                         </form>
                                     </>

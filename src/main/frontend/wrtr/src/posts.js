@@ -1,13 +1,19 @@
 import React from 'react';
 import { Carousel, CarouselCaption, CarouselItem } from "react-bootstrap"
 import dateFormat from 'dateformat';
+import Post from './model/post';
 
+/**
+ * 
+ * @param {{posts: Post[], canEdit: boolean, csrfToken: string}} props
+ * @returns {JSX.Element}
+ */
 function Posts({ posts = [], canEdit = false, csrfToken = "" }) {
     return (<>{
         posts !== [] ? 
         posts.map((post, index) => {
             return (
-                <div key={post.key} className="card my-5">
+                <div key={post.id} className="card my-5">
                     <div className="card-header">
                         <a href={"/user/" + post.authorId}>{post.authorUsername}</a>
                     </div>

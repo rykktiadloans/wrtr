@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -55,12 +57,12 @@ public class UserTests {
     }
     @Test
     public void userDtoDetectsExceedingUsernames(){
-        UserDto userDto = new UserDto("x".repeat(User.USERNAME_SIZE + 1), "", null);
+        UserDto userDto = new UserDto(UUID.randomUUID(), "x".repeat(User.USERNAME_SIZE + 1), "", null);
         assertTrue(userDto.isUsernameTooLarge());
     }
     @Test
     public void userDtoDetectsExceedingBios(){
-        UserDto userDto = new UserDto("", "x".repeat(User.BIO_SIZE + 1), null);
+        UserDto userDto = new UserDto(UUID.randomUUID(), "", "x".repeat(User.BIO_SIZE + 1), null);
         assertTrue(userDto.isBioTooLarge());
     }
 }

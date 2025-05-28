@@ -1,6 +1,7 @@
 package com.wrtr.wrtr.core.controllers.api;
 
 import com.wrtr.wrtr.core.model.User;
+import com.wrtr.wrtr.core.model.dto.UserApiDto;
 import com.wrtr.wrtr.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,12 +24,26 @@ public class UserRestController {
     private UserService userService;
 
     /**
+     * Return the UserApiDto object of the currently logged in user
+     * @param authentication Authenticated user
+     * @return UserApiDto of the user
+     */
+    @GetMapping(path = "/")
+    public UserApiDto getLoggedInUser(Authentication authentication) {
+        try {
+            return UserApiDto.fromUser(this.userService.getUserByAuth(authentication));
+        } catch (NullPointerException | UsernameNotFoundException e) {
+            return null;
+        }
+    }
+
+    /**
      * Fetches the data about the user
      * @param id Id of the user
      * @return The user, if found
      */
     @GetMapping(path = "/{id}")
-    public User getApiUser(@PathVariable("id") String id) {
+    public UserApiDto getApiUser(@PathVariable("id") String id) {
         User user;
         try{
             user = this.userService.getUserById(UUID.fromString(id));
@@ -36,8 +51,7 @@ public class UserRestController {
         catch (IllegalArgumentException | UsernameNotFoundException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        user.setPostList(null);
-        return user;
+        return UserApiDto.fromUser(user);
     }
 
     /**

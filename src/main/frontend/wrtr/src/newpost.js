@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 
+/**
+ * @param {{csrfToken: string}} CSRF Token
+ * @returns {JSX.Element} NewPost component
+ */
 function NewPost({csrfToken = ""}) {
     const [fileErrors, setFileErrors] = useState([]);
     const [disabled, setDisabled] = useState(false);

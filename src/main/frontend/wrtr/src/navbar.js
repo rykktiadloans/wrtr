@@ -1,8 +1,11 @@
 import React from "react";
+import User from "./model/user";
 
-
-function NavBar({isLoggedIn = false}) {
-
+/**
+ * @param {{currentUser: User?}} Logged in user
+ * @returns {JSX.Element} Navbar
+ */
+function NavBar({currentUser}) {
 
     return (
         <>
@@ -16,10 +19,11 @@ function NavBar({isLoggedIn = false}) {
                     </button>
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav me-auto mb-2 mb-md-0">
-                            { isLoggedIn ? 
+                            { currentUser ? 
                                 <>
                                     <li className="nav-item">
-                                        <a href="/myprofile" className="nav-link">My profile</a>
+                                        <a href={"/user/" + currentUser.id}
+                                            className="nav-link">My profile</a>
                                     </li>
                                     <li className="nav-item">
                                         <a href="/feed" className="nav-link">Feed</a>

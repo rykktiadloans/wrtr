@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import MetaTags from "./metatags";
 
+/**
+ * @returns {JSX.Element} Register component
+ */
 export default function Register() {
     const [searchParams, _] = useSearchParams();
     const [csrfToken, setCsrfToken] = useState("");
@@ -9,10 +12,10 @@ export default function Register() {
     const [confirmPassword, setConfirmPassword] = useState("");
 
     const arePasswordsEqual = password === confirmPassword;
-    const error = searchParams.get("error");
-    const duplicate = searchParams.get("duplicate");
-    const logout = searchParams.get("logout");
-    const maxlen = searchParams.get("maxlen");
+    const error = searchParams.has("error");
+    const duplicate = searchParams.has("duplicate");
+    const logout = searchParams.has("logout");
+    const maxlen = searchParams.has("maxlen");
 
     useEffect(() => {
         fetch("/api/users/csrf")
@@ -20,7 +23,7 @@ export default function Register() {
             .then(data => {
                 setCsrfToken(data.token);
             }).catch(error => { console.log("Couldn't get CSRF token!") });
-    }, [csrfToken]);
+    }, []);
 
     return (<>
         <MetaTags title="Register"/>
@@ -62,10 +65,10 @@ export default function Register() {
                                     </div> : <></>}
                                 <form action="/register" method="post">
                                     <div class="form-group my-3">
-                                        <input type="email" placeholder="example@sample.com" class="form-control" maxlength="255" required/>
+                                        <input name="email" type="email" placeholder="example@sample.com" class="form-control" maxlength="255" required/>
                                     </div>
                                     <div class="form-group my-3">
-                                        <input type="password" placeholder="Password" class="form-control" maxlength="255" minlength="8" required value={password} 
+                                        <input type="password" name="password" placeholder="Password" class="form-control" maxlength="255" minlength="8" required value={password} 
                                             onChange={(e) => setPassword(e.target.value)}/>
                                     </div>
                                     <div class="form-group my-3">
