@@ -1,0 +1,255 @@
+openapi: "3.1.0"
+info:
+  title: Wrtr REST Api
+  description: >
+    This is the document describing the API of Wrtr
+  version: "0.6.0"
+
+paths:
+  /api/users:
+    get:
+      summary: Returns the currently logged in user
+      description: Returns the currently logged in user, or null otherwise
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: 'schemas/user.yaml'
+                  - type: 'null'
+
+  /api/users/{id}:
+    get:
+      summary: Returns the user with specified ID
+      description: Returns the user with specified ID, returns 404 if user not found
+      parameters:
+        - $ref: 'parameters/userId.yaml'
+
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: 'schemas/user.yaml'
+        "404":
+          description: User not found
+
+  /api/users/csrf:
+    get:
+      summary: Get the CSRF token for the current user
+      description: Get the CSRF token for the current user
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: CSRF token
+                  parameterName:
+                    type: string
+                    default: _csrf
+                  headerName:
+                    type: string
+                    default: X-CSRF-TOKEN
+
+  /api/users/{id}/follow:
+    put:
+      summary: Follow the specified user
+      description: Add the specified user to the logged in user's list of followings
+      parameters:
+        - $ref: 'parameters/userId.yaml'
+        - $ref: 'parameters/csrf.yaml'
+      responses:
+        "301":
+          description: OK, redirect to the user's page
+          headers:
+            Location:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    default: /user/{id}
+        "405":
+          description: Wrong/No CSRF token
+
+  /api/users/{id}/unfollow:
+    put:
+      summary: Unfollow the specified user
+      description: Remove the specified user from the logged in user's list of followings
+      parameters:
+        - $ref: 'parameters/userId.yaml'
+        - $ref: 'parameters/csrf.yaml'
+      responses:
+        "301":
+          description: OK, redirect to the user's page
+          headers:
+            Location:
+              content:
+                text/plain:
+                  schema:
+                    type: string
+                    default: /user/{id}
+        "405":
+          description: Wrong/No CSRF token
+
+  /api/users/{id}/isFollowing:
+    get:
+      summary: Returns whether or not the current user follows the specified user
+      description: Returns whether or not the current user follows the specified user
+      parameters:
+        - $ref: 'parameters/userId.yaml'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+
+  /api/place/:
+    get:
+      summary: Get a string containing the place canvas
+      description: Get a string containing the place canvas
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+
+  /api/place/timeout:
+    get:
+      summary: Get the amount of seconds the currently logged in user is in timeout
+      description: >
+        Get the amount of seconds the currently logged in user is in timeout. 
+        Zero means the user is can act
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                minimum: 0
+                maximum: 60
+
+  /api/place/touch:
+    patch:
+      summary: Interact with the place canvas
+      description: >
+        Interact with the place canvas. Either add, delete, or change a given character.
+      parameters:
+        - name: position
+          in: query
+          required: true
+          schema:
+            type: integer
+            description: Position of character
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
+            description: >
+              Which character to add or change. Remove the appropriate character if
+              it's 'Backspace' or 'Delete'
+        - $ref: 'parameters/csrf.yaml'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+                description: >
+                  If it returns true, then the change is applied; if it's not, then try again
+
+  /api/posts/:
+    get:
+      summary: Get posts made by user
+      description: Get posts made by user, paginated
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+            description: UUID of the user
+        - name: page
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: 'schemas/post.yaml'
+        "404":
+          description: User was not found
+
+  /api/posts/feed:
+    get:
+      summary: Get posts from user's feed
+      description: Get posts from user's feed, paginated
+      parameters:
+        - name: page
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: 'schemas/post.yaml'
+
+
+
+  /api/users/canEdit:
+    get:
+      summary: Whether the logged in user can edit the page
+      description: >
+        Asserts whether the logged in user can edit the page of the
+        specified user or not
+      deprecated: true
+      parameters:
+        - $ref: 'parameters/userId.yaml'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+        "404":
+          description: The specified user has not been found
+
+  /api/users/isLoggedIn:
+    get:
+      summary: Is the user currently logged in
+      description: Is the user currently logged in
+      deprecated: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean

@@ -1,0 +1,13 @@
+type: object
+properties:
+  id:
+    type: string
+    description: UUID
+  username:
+    type: string
+  bio:
+    type: string
+  profilePicture:
+    type: string
+  role:
+    type: string

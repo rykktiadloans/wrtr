@@ -35,7 +35,7 @@ public class PostRestController {
     private UserService userService;
 
     /**
-     * Gets all the posts made by a user
+     * Gets all posts made by a user
      * @param userId Id of the user
      * @param page Specifies a page to look up
      * @return List of posts made by the user
