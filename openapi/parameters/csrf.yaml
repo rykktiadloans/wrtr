@@ -1,0 +1,6 @@
+name: _csrf
+in: query
+required: true
+description: CSRF token of the current user
+schema:
+  type: string

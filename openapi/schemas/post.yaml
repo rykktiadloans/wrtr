@@ -1,0 +1,30 @@
+type: object
+properties:
+  postId:
+    type: string
+    description: UUID
+  authorUsername:
+    type: string
+  authorId:
+    type: string
+    description: UUID
+  content:
+    type: string
+  date:
+    type: array
+    maxLength: 6
+    minLength: 6
+    items:
+      type: integer
+  resourceSet:
+    type: array
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+          description: UUID
+        path:
+          type: string
+        name:
+          type: string
