@@ -10,8 +10,8 @@
 	</parent>
 	<groupId>com.wrtr</groupId>
 	<artifactId>wrtr</artifactId>
-	<version>0.6.0</version>
-	<name>wrtr</name>
+	<version>1.0.0</version>
+	<name>Wrtr</name>
 	<description>Demo pseudo-social media platform</description>
 	<url/>
 	<licenses>

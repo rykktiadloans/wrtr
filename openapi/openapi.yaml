@@ -3,7 +3,7 @@ info:
   title: Wrtr REST Api
   description: >
     This is the document describing the API of Wrtr
-  version: "0.6.0"
+  version: "1.0.0"
 
 paths:
   /api/users:
